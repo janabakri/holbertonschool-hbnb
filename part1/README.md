@@ -5,7 +5,7 @@ This package diagram shows the three-layer architecture of the HBnB Evolution ap
 ---
 ## Package Diagram
 
-<img width="4792" height="4345" alt="User Place Review Platform-2026-02-05-162012" src="https://github.com/user-attachments/assets/065a3afd-5b53-4a4b-a13c-af7bc9422040" />
+<img width="4792" height="4345" alt="User Place Review Platform-2026-02-05-162012" src="https://github.com/user-attachments/assets/ed5b9d41-77c2-4ecb-be14-e2c266ad4d3e" />
 
 
 ### Architecture Layers
