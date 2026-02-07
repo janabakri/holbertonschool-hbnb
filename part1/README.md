@@ -398,3 +398,9 @@ Flow Overview:
 - Solid arrows (`->>`) indicate synchronous messages/calls.  
 - Dashed arrows (`-->>`) indicate responses.  
 - Loops and conditions are included to show repeated or conditional operations (e.g., retrieving amenities for each place).
+
+## Project Team
+
+- *Raghad Almalki* – https://github.com/Raghad717  
+- *Rama Alshahri* – https://github.com/csrama  
+- *Jana Bakri* – https://github.com/janabakri
