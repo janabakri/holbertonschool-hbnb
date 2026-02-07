@@ -324,5 +324,8 @@ This architecture provides a robust foundation for HBnB Evolution, balancing fle
 ## Contributors 
 
 *Jana Bakri*
+---
 *Rama Alsheheri*
+---
 *Raghad Almalki*
+---
