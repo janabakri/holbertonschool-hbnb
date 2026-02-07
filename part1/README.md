@@ -429,6 +429,6 @@ Flow Overview:
 
 ## Project Team
 
-- *Raghad Almalki* – https://github.com/Raghad717  
-- *Rama Alshahri* – https://github.com/csrama  
-- *Jana Bakri* – https://github.com/janabakri
+- *Raghad Almalki*    
+- *Rama Alshahri* 
+- *Jana Bakri* 
