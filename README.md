@@ -95,7 +95,7 @@ Real-time availability checking
 
 Amenity-based categorization
 
-Review and rating aggregation
+## Review and rating aggregation
 
 Rules: Only published places are bookable; owners control availability
 
