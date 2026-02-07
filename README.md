@@ -262,7 +262,7 @@ Financial Integrity: Auditable booking and payment trails
 
 Content Moderation: Review and messaging oversight
 
-Scalability Features
+## Scalability Features
 
 Horizontal Scaling
 
