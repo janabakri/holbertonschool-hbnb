@@ -15,6 +15,16 @@
 This document is intended for developers, reviewers, and instructors who need a clear and structured understanding of the system’s internal design prior to implementation.
 
 ---
+## Contributors
+
+Raghad Almalki — https://github.com/Raghad717
+
+Rama Alshahri — https://github.com/csrama
+
+Jana Bakri — https://github.com/janabakri
+
+---
+
 
 ### 0. High-Level Package Diagram
 ## Overview
