@@ -321,3 +321,8 @@ Analytics Integration: Usage tracking and business intelligence
 
 This architecture provides a robust foundation for HBnB Evolution, balancing flexibility with structure, and enabling both current functionality and future growth. The clear separation of concerns, consistent patterns, and comprehensive validation ensure a maintainable, scalable, and secure platform for property rentals and bookings.
 
+## Contributors 
+
+*Jana Bakri*
+*Rama Alsheheri*
+*Raghad Almalki*
