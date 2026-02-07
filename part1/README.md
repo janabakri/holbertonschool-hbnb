@@ -358,7 +358,11 @@ Each sequence diagram is accompanied by a brief explanation describing the main 
 ---
 
 ## 1. User Registration
-<img width="7250" height="5235" alt="Untitled diagram-2026-02-04-184051 (1)" src="https://github.com/user-attachments/assets/fd346cde-ddcb-49a5-9a49-e30a15db583d" />
+
+
+<img width="7250" height="5235" alt="sequence_diagrams1" src="https://github.com/user-attachments/assets/a95fd3a4-4484-480b-ba35-22dfea2c52a1" />
+
+
 
 Use Case: Register a new user in the system.  
 
@@ -376,7 +380,11 @@ Flow Overview:
 ---
 
 ## 2. Place Creation
-<img width="8192" height="5198" alt="Untitled diagram-2026-02-04-183846 (1)" src="https://github.com/user-attachments/assets/f6cf5491-258a-499e-8385-5877fd5c4bb5" />
+
+
+<img width="8192" height="5198" alt="sequence_diagrams2" src="https://github.com/user-attachments/assets/12bfe08c-fbe3-4e09-81f4-82edf7e2f50d" />
+
+
 
 Use Case: Owner creates a new place.  
 
@@ -392,7 +400,10 @@ Flow Overview:
 ---
 
 ## 3. Review Submission
-<img width="8192" height="6336" alt="Untitled diagram-2026-02-04-183926 (1)" src="https://github.com/user-attachments/assets/fd00862c-42b1-4577-8181-1e7ef4089efa" />
+
+
+<img width="8192" height="6336" alt="sequence_diagrams3" src="https://github.com/user-attachments/assets/bc2a9372-7871-4e0f-a600-f39db0e5231a" />
+
 
 Use Case: Guest adds a review for a place.  
 
@@ -408,7 +419,11 @@ Flow Overview:
 ---
 
 ## 4. Fetching a List of Places
-<img width="7405" height="4640" alt="Untitled diagram-2026-02-04-184019 (1)" src="https://github.com/user-attachments/assets/77b55cc6-abc0-40bc-b78f-8fd4097c42f8" />
+
+
+<img width="7405" height="4640" alt="sequence_diagrams4" src="https://github.com/user-attachments/assets/11798d84-ce5d-41b6-a326-ebc542584297" />
+
+
 
 Use Case: Browser searches for places with optional filters.  
 
