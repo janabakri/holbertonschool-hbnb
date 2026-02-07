@@ -1,3 +1,21 @@
+## HBnB Evolution — System Architecture & Design Documentation Overview
+
+**This document provides a comprehensive technical overview of the HBnB Evolution system architecture, focusing on package structure, business logic design, entity relationships, and API interaction workflows. It serves as a reference for understanding how the system is organized internally and how its components collaborate to deliver core functionality.**
+
+## The documentation includes:
+
+-A high-level package diagram illustrating the three-layer architecture and Facade communication flow
+
+-A detailed class diagram for the Business Logic layer
+
+-Explicit business rules and multiplicity constraints for all core entities
+
+-Sequence diagrams demonstrating how key API operations are executed across system layers
+
+This document is intended for developers, reviewers, and instructors who need a clear and structured understanding of the system’s internal design prior to implementation.
+
+---
+
 ### 0. High-Level Package Diagram
 ## Overview
 This package diagram shows the three-layer architecture of the HBnB Evolution application and how layers communicate through the Facade design pattern.
