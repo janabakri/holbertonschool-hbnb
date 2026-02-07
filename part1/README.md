@@ -428,7 +428,6 @@ Flow Overview:
 - Loops and conditions are included to show repeated or conditional operations (e.g., retrieving amenities for each place).
 
 ## Project Team
-
 - *Raghad Almalki*    
 - *Rama Alshahri* 
 - *Jana Bakri* 
