@@ -33,7 +33,7 @@ The project follows a **3-layer architecture**:
 ## 2. Team Members
 
 | Name | GitHub | Contributions |
-|------|-----------------------|
+|------|--------|---------------|
 | **Rama Alshehri** |  [@csrama](https://github.com/csrama) | Project architecture design, User and Place models, API endpoint development, Repository pattern |
 | **Jana Bakri** |  [@janabakri]( https://github.com/janabakri) | Review and Amenity models, Facade pattern, Validation logic, Testing framework |
 | **Raghad Al-Malki** |  [@Raghad717]( https://github.com/Raghad717) | Flask-RESTx integration, Swagger documentation, Error handling, API testing |
