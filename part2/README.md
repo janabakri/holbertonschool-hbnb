@@ -60,7 +60,7 @@ The project follows a **3-layer architecture**:
 
 ### 4.2 Design Patterns Used
 
-#### Facade Pattern
+### Facade Pattern
 The `HBnBFacade` class provides a simplified interface to the complex subsystem:
 ```python
 # Example: Facade hides complexity
@@ -73,6 +73,8 @@ repository.update(user_id, data)
 repository.delete(user_id)
 users_ns.facade = facade  # Shared instance
 places_ns.facade = facade  # Same instance
+
+---
 
 holbertonschool-hbnb/
 └── part2/
@@ -109,7 +111,8 @@ holbertonschool-hbnb/
     └── README.md                                    # Documentation
 
 ---
-**Team Members**
+
+Team Members
 - Rama Alshehri	
 - Jana Bakri	
 - Raghad AlMalki
