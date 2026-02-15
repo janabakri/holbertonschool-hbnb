@@ -1,27 +1,4 @@
-# 🏨 HBnB Project - Part 2: RESTful API Implementation
-
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
-![Flask-RESTx](https://img.shields.io/badge/Flask--RESTx-1.1.0-red.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
-
-## 📋 Table of Contents
-- [Project Overview](#project-overview)
-- [Team Members](#team-members)
-- [Technologies Used](#technologies-used)
-- [Project Architecture](#project-architecture)
-- [Project Structure](#project-structure)
-- [Installation Guide](#installation-guide)
-- [Running the Application](#running-the-application)
-- [API Documentation](#api-documentation)
-- [Complete API Endpoints](#complete-api-endpoints)
-- [Data Models](#data-models)
-- [Testing Guide](#testing-guide)
-- [Features Implemented](#features-implemented)
-- [Error Handling](#error-handling)
-- [Validation Rules](#validation-rules)
-- [Contributors](#contributors)
-- [License](#license)
+# HBnB Project - Part 2: RESTful API Implementation
 
 ---
 
@@ -38,12 +15,12 @@ The API allows users to:
 - **Add amenities** - Define property features
 
 ### Key Features
-- ✅ Complete CRUD operations for all entities
-- ✅ Input validation and error handling
-- ✅ Password hashing for security
-- ✅ Swagger documentation
-- ✅ Comprehensive test suite
-- ✅ Clean architecture with separation of concerns
+- Complete CRUD operations for all entities
+- Input validation and error handling
+- Password hashing for security
+- Swagger documentation
+- Comprehensive test suite
+- Clean architecture with separation of concerns
 
 ### Architecture
 The project follows a **3-layer architecture**:
@@ -55,25 +32,25 @@ The project follows a **3-layer architecture**:
 
 ## 2. Team Members
 
-| Name | Role | GitHub | Contributions |
-|------|------|--------|---------------|
-| **Rama Alshehri** | Lead Developer | [@rama-alshehri](https://github.com/rama-alshehri) | Project architecture design, User and Place models, API endpoint development, Repository pattern |
-| **Jana Bakri** | Backend Developer | [@jana-bakri](https://github.com/jana-bakri) | Review and Amenity models, Facade pattern, Validation logic, Testing framework |
-| **Raghad Al-Malki** | API Specialist | [@raghad-almalki](https://github.com/raghad-almalki) | Flask-RESTx integration, Swagger documentation, Error handling, API testing |
+| Name | GitHub | Contributions |
+|------|-----------------------|
+| **Rama Alshehri** |  [@csrama](https://github.com/csrama) | Project architecture design, User and Place models, API endpoint development, Repository pattern |
+| **Jana Bakri** |  [@janabakri]( https://github.com/janabakri) | Review and Amenity models, Facade pattern, Validation logic, Testing framework |
+| **Raghad Al-Malki** |  [@Raghad717]( https://github.com/Raghad717) | Flask-RESTx integration, Swagger documentation, Error handling, API testing |
 
 ---
 
 ## 3. Technologies Used
 
-| Technology | Version | Purpose | Why Used? |
-|------------|---------|---------|-----------|
-| **Python** | 3.8+ | Programming Language | Industry standard for web APIs |
-| **Flask** | 2.3.3 | Web Framework | Lightweight, flexible, excellent for REST APIs |
-| **Flask-RESTx** | 1.1.0 | API Development | Automatic Swagger docs, request parsing |
-| **pytest** | 7.4.0 | Testing | Powerful testing framework |
-| **pytest-cov** | 4.1.0 | Coverage | Measure test coverage |
-| **UUID** | Built-in | ID Generation | Universally unique identifiers |
-| **hashlib** | Built-in | Password Hashing | Secure password storage |
+| Technology | Purpose | Why Used? |
+|------------|-----------|----------|
+| **Python** | Programming Language | Industry standard for web APIs |
+| **Flask** | Web Framework | Lightweight, flexible, excellent for REST APIs |
+| **Flask-RESTx** | API Development | Automatic Swagger docs, request parsing |
+| **pytest** | Testing | Powerful testing framework |
+| **pytest-cov** | Coverage | Measure test coverage |
+| **UUID** |  ID Generation | Universally unique identifiers |
+| **hashlib** |  Password Hashing | Secure password storage |
 
 ---
 
@@ -130,8 +107,9 @@ holbertonschool-hbnb/
     ├── requirements.txt                           # Dependencies
     ├── run.py                                      # Entry point
     └── README.md                                    # Documentation
-Team Members
-Name	Role
-Rama Alshehri	
-Jana Bakri	
-Raghad Al-Malki
+
+---
+**Team Members**
+- Rama Alshehri	
+- Jana Bakri	
+- Raghad AlMalki
