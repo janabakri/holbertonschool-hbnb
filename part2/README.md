@@ -191,7 +191,40 @@ This ensures system reliability and prevents regressions.
 
 7. Project Structure
 
-holbertonschool-hbnb/ └── part2/ ├── app/ │ ├── __init__.py # Application factory │ ├── api/ │ │ ├── __init__.py │ │ └── v1/ │ │ ├── __init__.py │ │ ├── users.py # User endpoints │ │ ├── places.py # Place endpoints │ │ ├── reviews.py # Review endpoints │ │ └── amenities.py # Amenity endpoints │ ├── models/ │ │ ├── __init__.py │ │ ├── user.py # User model │ │ ├── place.py # Place model │ │ ├── review.py # Review model │ │ └── amenity.py # Amenity model │ ├── persistence/ │ │ ├── __init__.py │ │ └── repository.py # In-memory repository │ └── services/ │ ├── __init__.py │ └── facade.py # Facade pattern ├── tests/ │ ├── __init__.py │ ├── test_users.py # User tests │ ├── test_places.py # Place tests │ ├── test_reviews.py # Review tests │ └── test_amenities.py # Amenity tests ├── requirements.txt # Dependencies ├── run.py # Entry point └── README.md # Documentation ---
+holbertonschool-hbnb/
+└── part2/
+    ├── app/
+    │   ├── __init__.py                 # Application factory
+    │   ├── api/
+    │   │   ├── __init__.py
+    │   │   └── v1/
+    │   │       ├── __init__.py
+    │   │       ├── users.py            # User endpoints
+    │   │       ├── places.py           # Place endpoints
+    │   │       ├── reviews.py          # Review endpoints
+    │   │       └── amenities.py        # Amenity endpoints
+    │   ├── models/
+    │   │   ├── __init__.py
+    │   │   ├── user.py                 # User model
+    │   │   ├── place.py                # Place model
+    │   │   ├── review.py               # Review model
+    │   │   └── amenity.py              # Amenity model
+    │   ├── persistence/
+    │   │   ├── __init__.py
+    │   │   └── repository.py           # In-memory repository
+    │   └── services/
+    │       ├── __init__.py
+    │       └── facade.py               # Facade pattern
+    ├── tests/
+    │   ├── __init__.py
+    │   ├── test_users.py               # User tests
+    │   ├── test_places.py              # Place tests
+    │   ├── test_reviews.py             # Review tests
+    │   └── test_amenities.py           # Amenity tests
+    ├── requirements.txt                # Dependencies
+    ├── run.py                          # Entry point
+    └── README.md                       # Documentation
+
 
 8. Team Members
 
