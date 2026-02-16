@@ -96,6 +96,8 @@ update_timestamp(): Updates the updated_at field automatically
 
 Design Purpose: Implements the Template Method Pattern to ensure consistent behavior across all entities (DRY principle).
 
+---
+
 *2. User Entity*
 Role: Represents all system users (guests, hosts, administrators).
 
@@ -117,8 +119,10 @@ Administrative users have elevated privileges
 
 Inactive users cannot log in
 
-3. Place Entity
+*3. Place Entity*
 Role: Represents rental properties available for booking.
+
+---
 
 ## Key Business Logic:
 
@@ -137,6 +141,8 @@ Only published places are visible to guests
 Price calculations consider amenities and seasonal rates
 
 Availability checks prevent double bookings
+
+---
 
 *4. Review Entity*
 Role: Manages user reviews and ratings for places.
@@ -157,6 +163,8 @@ Verified stays get priority in display
 
 Reviews can only be edited within a limited timeframe
 
+---
+
 *5. Amenity Entity*
 Role: Defines features and facilities available at places.
 
@@ -175,26 +183,6 @@ Standard amenities are included in base price
 Additional amenities incur extra charges
 
 Amenities can be activated/deactivated per place
-
-*6. Booking Entity*
-   
-Role: Manages reservation transactions between users and places.
-
-## Key Business Logic:
-
-Reservation Management: create(), confirm(), cancel()
-
-Validation: check_dates(), validate_guests(), is_cancellable()
-
-Financial Operations: calculate_total(), process_payment()
-
-Critical Business Rules:
-
-Bookings must respect place capacity limits
-
-Cancellation policies affect refund eligibility
-
-Dates must be sequential (check-in before check-out)
 
 ---
 
@@ -283,62 +271,6 @@ Pricing logic: Standard amenities have additional_cost = 0 and is_included = tru
 Availability checking: Some amenities may be seasonal (only available certain months)
 
 Categorization: Group amenities for display and filtering purposes
-
-## 5. User → Booking (1 to Many)
-Constraint: One User can make many Bookings
-
-Database Enforcement:
-
-Foreign key constraint: user_id in bookings table references users.id
-
-Index on user_id for retrieving User's booking history
-
-Check constraint: guests > 0 and check_out > check_in
-
-Trigger to validate availability before insert/update
-
-Business Logic Enforcement:
-
-Booking limits: Maximum 3 active bookings per User at a time
-
-Payment verification: Must have valid payment method on file
-
-Cancellation history: Track cancellation rate (Users with high rates may face restrictions)
-
-Age verification: Minimum age requirement for booking certain properties
-
-Review requirement: Must review past stays before making new bookings (optional rule)
-
-## 6. Place → Booking (1 to Many)
-Constraint: One Place can have many Bookings
-
-Database Enforcement:
-
-Foreign key constraint: place_id in bookings table references places.id
-
-Index on place_id for retrieving Place's booking history
-
-Exclusion constraint: Prevent overlapping bookings for same Place
-
-Check constraint: guests <= places.max_guests
-
-Business Logic Enforcement:
-
-Availability window: Place owners can set advance booking window (e.g., 12 months max)
-
-Minimum stay: Enforce minimum nights requirement
-
-Blackout dates: Allow owners to block specific dates
-
-Dynamic pricing: Adjust price based on season, demand, length of stay
-
-Preparation time: Ensure minimum gap between bookings for cleaning
-                   explain it better or add on it to be more spesific
-
-
-
-
-
 
 ---
 # Sequence Diagrams for API Calls
