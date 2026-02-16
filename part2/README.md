@@ -114,7 +114,7 @@ Abstracts data storage from business logic.
 | hashlib | Password Hashing | Secure password storage |
 
 ---
-## 📚 API Documentation
+## API Documentation
 
 ### Available Endpoints
 
