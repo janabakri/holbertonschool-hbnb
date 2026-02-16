@@ -78,7 +78,8 @@ the flow becomes: API → HbnbFacade → (internal coordination) → Repository
 ---
 
 ## Class Diagram
-![UML Diagram](//www.plantuml.com/plantuml/png/XLHDR-Cs4BthLx3OGtTR66WFlHIxGUp4RGoaQH0xXvw4CJcH1Y4v0ZcIctxyzqgYYvYIazLDxpsCthn7wZ8A16cTBRwH6XsgZlO1l1JncNm30PoADHW-aA-KX1PFYC2jDvg3nw1-_Ec4q1PYN8e4shU26yr-It-X-g4GRfImshC8EsKee1PYNmY9HNMpyYjrpGx8gz_Oe2qAs4S9e2MDL2k8kFP2yg8-V_wVkxXGVnTAVKz6_QmU7pVNmuiE28Ac1Ed1Qn3SaSE1Q1jpbbWi1ZP2Xny_zSoAsIBu0JDeKMPecbCAEOm2hXdvZiaK_nP5SliOCQWFjrJLih8j9fVeW6mltKeWNmr8qsiF74nPGwmpveb2bDA3mmosS0vjQlOvGh44uyXdnaTK2tMOmSbNsM6W9qAJSIcQW1L5mJ0iEgusMk6AV1PD0hcLDm9h0Z-HdSMfQ_1LpnwpcDAZhvToD3dlPzm7yevUQxYteF7Omwy1qQSYXCJcUHcCEb0Zn3vFDf3khM4e_J2Zvtwn39Ag49BMO8QnhsOW61Cmncok9dd90MwzX1npy6TPjHWbzl362rOf-JsQmEocA4WzXrE1JRkt5EjPyc1rQrCrfFiCJsth6lLp2HsGXJtPtl3vZ1-m8pmSG_u3hUL3IZc0aAzoavgTGo-Ji_hUsUl0ae7v9GpOS93pbfOE_H3mXrrDKImcFxDheq6muadeO0m9iGTRQewdZVT-abloshO6pVJZttwPF6fpTxD-sEoMTrThDIM_5AU_j7yMY_5cZN7L64Z0Qvn9qe5-NvCA-Ohe656kEhV2m_fskTlyVhUzsTnlpomnclxknDeLkuRZcA7wo0SVFoNDOd7nQcqP8sk293e44knbQSBRkXeoqN65gUhOJY-zH6zQP_y3)
+
+<img width="709" height="1138" alt="hbnb png" src="https://github.com/user-attachments/assets/19ffa814-3332-456c-a857-ee363b056587" />
 
 ### Explanatory Notes
 *1. BaseEntity*
