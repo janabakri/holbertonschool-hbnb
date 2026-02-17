@@ -352,3 +352,13 @@ HBnB is a simplified Airbnb-like backend system developed as part of the Holbert
 - Swagger API documentation for easy testing
 - Modular and scalable three-layer architecture
 - Unit tests with pytest for reliability
+
+## Architecture
+
+The project follows a Three-Layer Architecture pattern:
+
+| Layer | Responsibility | Key Components |
+|-------|----------------|-----------------|
+| Presentation | API endpoints and request handling | Flask routes, request parsing, response formatting |
+| Business Logic | Core rules and validations | Data validation, business rules, authorization |
+| Persistence | Data storage and retrieval | In-memory storage, data models, CRUD operations |
