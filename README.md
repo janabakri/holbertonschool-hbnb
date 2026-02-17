@@ -338,4 +338,17 @@ Analytics Integration: Usage tracking and business intelligence
 
 - # HBnB - RESTful API Backend
 
-- 
+- ## Overview
+
+HBnB is a simplified Airbnb-like backend system developed as part of the Holberton School curriculum. This project implements a fully functional RESTful API that manages users, places, reviews, and amenities using clean architecture principles and industry best practices.
+
+## Features
+
+- Full CRUD operations for all resources
+- Structured JSON responses with consistent formatting
+- Comprehensive input validation and error handling
+- Secure password hashing using hashlib
+- UUID-based identifiers for all resources
+- Swagger API documentation for easy testing
+- Modular and scalable three-layer architecture
+- Unit tests with pytest for reliability
