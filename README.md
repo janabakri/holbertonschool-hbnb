@@ -374,38 +374,38 @@ The project follows a Three-Layer Architecture pattern:
 
 # Project Structure
 
-- holbertonschool-hbnb/
+holbertonschool-hbnb/
 │
-├── app/
-│   ├── api/
+├── app/                          # Main application package
+│   ├── api/                      # API layer
 │   │   ├── __init__.py
-│   │   ├── users.py
-│   │   ├── places.py
-│   │   ├── reviews.py
-│   │   └── amenities.py
+│   │   ├── users.py              # User endpoints
+│   │   ├── places.py             # Place endpoints
+│   │   ├── reviews.py            # Review endpoints
+│   │   └── amenities.py          # Amenity endpoints
 │   │
-│   ├── models/
+│   ├── models/                    # Data models
 │   │   ├── __init__.py
-│   │   ├── user.py
-│   │   ├── place.py
-│   │   ├── review.py
-│   │   └── amenity.py
+│   │   ├── user.py                # User model
+│   │   ├── place.py               # Place model
+│   │   ├── review.py              # Review model
+│   │   └── amenity.py             # Amenity model
 │   │
-│   ├── services/
+│   ├── services/                  # Business logic layer
 │   │   ├── __init__.py
-│   │   └── facade.py
+│   │   └── facade.py              # Facade pattern implementation
 │   │
-│   └── persistence/
+│   └── persistence/               # Data persistence layer
 │       ├── __init__.py
-│       └── repository.py
+│       └── repository.py          # In-memory repository
 │
-├── tests/
+├── tests/                         # Test suite
 │   ├── __init__.py
 │   ├── test_users.py
 │   ├── test_places.py
 │   ├── test_reviews.py
 │   └── test_amenities.py
 │
-├── requirements.txt
-├── run.py
-└── README.md
+├── requirements.txt                # Project dependencies
+├── run.py                          # Application entry point                       
+└── README.md                       # Project documentation
