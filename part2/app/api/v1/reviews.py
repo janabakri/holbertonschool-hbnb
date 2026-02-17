@@ -3,9 +3,10 @@ Review API endpoints with all CRUD operations
 """
 from flask_restx import Namespace, Resource, fields
 from flask import request
+from app.services.facade import HBnBFacade
 
 api = Namespace("reviews", description="Review operations")
-facade = None
+facade = HBnBFacade()
 
 # Request models
 review_model = api.model("Review", {
@@ -134,3 +135,4 @@ class ReviewResource(Resource):
         if not result:
             return {"error": "Review not found"}, 404
         return {"message": "Review deleted successfully"}, 200
+
