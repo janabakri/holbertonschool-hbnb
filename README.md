@@ -153,11 +153,6 @@ User → Review (1:Many): Users write multiple reviews
 Place ↔ Amenity (Many:Many): Properties offer multiple amenities
 
 
-User → Booking (1:Many): Users make multiple reservations
-
-
-Place → Booking (1:Many): Properties host multiple bookings
-
 ## Business Rule Enforcement
 
 Data Integrity: Foreign key constraints, unique constraints, check constraints
@@ -407,4 +402,9 @@ The project follows a Three-Layer Architecture pattern:
 | GET | `/amenities/{id}` | Retrieve a specific amenity |
 | PUT | `/amenities/{id}` | Update an amenity |
 | DELETE | `/amenities/{id}` | Delete an amenity |
+---
+## Contributors 
 
+- *Raghad Almalki* – https://github.com/Raghad717  
+- *Rama Alshahri* – https://github.com/csrama  
+- *Jana Bakri* – https://github.com/janabakri
