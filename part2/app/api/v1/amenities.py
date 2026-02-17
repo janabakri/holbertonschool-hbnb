@@ -2,10 +2,11 @@
 Amenity API endpoints with all CRUD operations
 """
 from flask_restx import Namespace, Resource, fields
+from app.services.facade import HBnBFacade
 from flask import request
 
 api = Namespace("amenities", description="Amenity operations")
-facade = None
+facade = HBnBFacade()
 
 # Request models
 amenity_model = api.model("Amenity", {
@@ -88,3 +89,4 @@ class AmenityResource(Resource):
             return {"error": "Amenity not found"}, 404
         
         return amenity.to_dict(), 200
+
