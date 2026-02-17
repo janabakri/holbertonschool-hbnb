@@ -3,9 +3,10 @@ Place API endpoints with all validations
 """
 from flask_restx import Namespace, Resource, fields
 from flask import request
+from app.services.facade import HBnBFacade
 
 api = Namespace("places", description="Place operations")
-facade = None
+facade = HBnBFacade()
 
 # Request models
 place_model = api.model("Place", {
