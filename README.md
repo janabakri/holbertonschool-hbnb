@@ -362,3 +362,12 @@ The project follows a Three-Layer Architecture pattern:
 | Presentation | API endpoints and request handling | Flask routes, request parsing, response formatting |
 | Business Logic | Core rules and validations | Data validation, business rules, authorization |
 | Persistence | Data storage and retrieval | In-memory storage, data models, CRUD operations |
+
+## Technologies
+
+- Python 3.8+ - Core programming language
+- Flask - Lightweight web framework
+- Flask-RESTx - API documentation and validation
+- Pytest - Unit testing framework
+- UUID - Unique identifier generation
+- hashlib - Password hashing and security
