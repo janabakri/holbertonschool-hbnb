@@ -371,3 +371,41 @@ The project follows a Three-Layer Architecture pattern:
 - Pytest - Unit testing framework
 - UUID - Unique identifier generation
 - hashlib - Password hashing and security
+
+# Project Structure
+
+- holbertonschool-hbnb/
+│
+├── app/
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── users.py
+│   │   ├── places.py
+│   │   ├── reviews.py
+│   │   └── amenities.py
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   ├── place.py
+│   │   ├── review.py
+│   │   └── amenity.py
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── facade.py
+│   │
+│   └── persistence/
+│       ├── __init__.py
+│       └── repository.py
+│
+├── tests/
+│   ├── __init__.py
+│   ├── test_users.py
+│   ├── test_places.py
+│   ├── test_reviews.py
+│   └── test_amenities.py
+│
+├── requirements.txt
+├── run.py
+└── README.md
