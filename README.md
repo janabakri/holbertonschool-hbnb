@@ -372,3 +372,39 @@ The project follows a Three-Layer Architecture pattern:
 - UUID - Unique identifier generation
 - hashlib - Password hashing and security
 
+### Users
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/users` | Retrieve all users |
+| POST | `/users` | Create a new user |
+| GET | `/users/{id}` | Retrieve a specific user |
+| PUT | `/users/{id}` | Update a user |
+| DELETE | `/users/{id}` | Delete a user |
+
+### Places
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/places` | Retrieve all places |
+| POST | `/places` | Create a new place |
+| GET | `/places/{id}` | Retrieve a specific place |
+| PUT | `/places/{id}` | Update a place |
+| DELETE | `/places/{id}` | Delete a place |
+
+### Reviews
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/reviews` | Retrieve all reviews |
+| POST | `/reviews` | Create a new review |
+| GET | `/reviews/{id}` | Retrieve a specific review |
+| PUT | `/reviews/{id}` | Update a review |
+| DELETE | `/reviews/{id}` | Delete a review |
+
+### Amenities
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/amenities` | Retrieve all amenities |
+| POST | `/amenities` | Create a new amenity |
+| GET | `/amenities/{id}` | Retrieve a specific amenity |
+| PUT | `/amenities/{id}` | Update an amenity |
+| DELETE | `/amenities/{id}` | Delete an amenity |
+
