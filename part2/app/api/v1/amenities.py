@@ -89,4 +89,15 @@ class AmenityResource(Resource):
             return {"error": "Amenity not found"}, 404
         
         return amenity.to_dict(), 200
-
+    
+    @api.doc("delete_amenity")
+    @api.response(204, "Amenity deleted")
+    @api.response(404, "Amenity not found")
+    def delete(self, amenity_id):
+        """Delete an amenity"""
+        amenity = facade.get_amenity(amenity_id)
+        if not amenity:
+            return {"error": "Amenity not found"}, 404
+        
+        facade.amenities.delete(amenity_id)
+        return "", 204
