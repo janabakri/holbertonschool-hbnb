@@ -114,7 +114,6 @@ class UserResource(Resource):
             return {"error": "User not found"}, 404
         
         return user.to_dict(), 200
-
 @api.doc("delete_user")
     @api.response(204, "User deleted")
     def delete(self, user_id):
