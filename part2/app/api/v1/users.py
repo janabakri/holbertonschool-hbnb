@@ -8,6 +8,7 @@ api = Namespace("users", description="User operations")
 from app.services.facade import HBnBFacade
 
 facade = HBnBFacade()
+
 # Request models
 user_model = api.model("User", {
     "email": fields.String(required=True, description="User email"),
@@ -43,29 +44,25 @@ class UserList(Resource):
     def post(self):
         """Create a new user"""
         data = request.json
-        
-        # Validate required fields
+
         required_fields = ['email', 'password', 'first_name', 'last_name']
         for field in required_fields:
             if field not in data:
                 return {"error": f"Missing field: {field}"}, 400
             if not data[field] or data[field].strip() == "":
                 return {"error": f"{field} cannot be empty"}, 400
-        
-        # Validate email format
+
         if "@" not in data["email"]:
             return {"error": "Invalid email format"}, 400
-        
-        # Check for duplicate email
+
         existing_users = facade.get_all_users()
         for user in existing_users:
             if user.email == data["email"]:
                 return {"error": "Email already exists"}, 409
-        
-        # Create user
+
         user = facade.create_user(data)
         return user.to_dict(), 201
-    
+
     @api.doc("list_users")
     @api.marshal_list_with(user_response)
     def get(self):
@@ -86,7 +83,7 @@ class UserResource(Resource):
         if not user:
             return {"error": "User not found"}, 404
         return user.to_dict(), 200
-    
+
     @api.doc("update_user")
     @api.expect(user_update_model)
     @api.marshal_with(user_response)
@@ -95,28 +92,26 @@ class UserResource(Resource):
     def put(self, user_id):
         """Update user information"""
         data = request.json
-        
         if not data:
             return {"error": "No data provided"}, 400
-        
-        # Validate email if provided
-        if "email" in data:
-            if "@" not in data["email"]:
-                return {"error": "Invalid email format"}, 400
-        
-        # Validate names if provided
+
+        if "email" in data and "@" not in data["email"]:
+            return {"error": "Invalid email format"}, 400
+
         for field in ["first_name", "last_name"]:
             if field in data and data[field].strip() == "":
                 return {"error": f"{field} cannot be empty"}, 400
-        
+
         user = facade.update_user(user_id, data)
         if not user:
             return {"error": "User not found"}, 404
-        
+
         return user.to_dict(), 200
-@api.doc("delete_user")
+
+    @api.doc("delete_user")
     @api.response(204, "User deleted")
     def delete(self, user_id):
+        """Delete a user by ID"""
         user = facade.get_user(user_id)
         if not user:
             return {"error": "User not found"}, 404
