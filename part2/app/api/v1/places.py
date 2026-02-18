@@ -153,6 +153,18 @@ class PlaceResource(Resource):
             return {"error": "Place not found"}, 404
         
         return place.to_dict(), 200
+    
+    @api.doc("delete_place")
+    @api.response(204, "Place deleted")
+    @api.response(404, "Place not found")
+    def delete(self, place_id):
+        """Delete a place"""
+        place = facade.get_place(place_id)
+        if not place:
+            return {"error": "Place not found"}, 404
+        
+        facade.places.delete(place_id)
+        return "", 204
 
 
 @api.route("/<string:place_id>/amenities/<string:amenity_id>")
@@ -181,4 +193,6 @@ class PlaceReviewsResource(Resource):
         if not place:
             return {"error": "Place not found"}, 404
         
-        return [review.to_dict() for review in place.reviews], 200
+        # Get reviews from the place object
+        reviews = place.reviews if hasattr(place, 'reviews') else []
+        return [review.to_dict() for review in reviews], 200
