@@ -3,10 +3,9 @@ User API endpoints with all CRUD operations
 """
 from flask_restx import Namespace, Resource, fields
 from flask import request
-
-api = Namespace("users", description="User operations")
 from app.services.facade import HBnBFacade
 
+api = Namespace("users", description="User operations")
 facade = HBnBFacade()
 
 # Request models
@@ -45,6 +44,7 @@ class UserList(Resource):
         """Create a new user"""
         data = request.json
 
+        # Validate required fields
         required_fields = ['email', 'password', 'first_name', 'last_name']
         for field in required_fields:
             if field not in data:
@@ -52,9 +52,11 @@ class UserList(Resource):
             if not data[field] or data[field].strip() == "":
                 return {"error": f"{field} cannot be empty"}, 400
 
+        # Validate email format
         if "@" not in data["email"]:
             return {"error": "Invalid email format"}, 400
 
+        # Check for duplicate email
         existing_users = facade.get_all_users()
         for user in existing_users:
             if user.email == data["email"]:
@@ -95,9 +97,11 @@ class UserResource(Resource):
         if not data:
             return {"error": "No data provided"}, 400
 
+        # Validate email if provided
         if "email" in data and "@" not in data["email"]:
             return {"error": "Invalid email format"}, 400
 
+        # Validate names if provided
         for field in ["first_name", "last_name"]:
             if field in data and data[field].strip() == "":
                 return {"error": f"{field} cannot be empty"}, 400
@@ -110,10 +114,12 @@ class UserResource(Resource):
 
     @api.doc("delete_user")
     @api.response(204, "User deleted")
+    @api.response(404, "User not found")
     def delete(self, user_id):
         """Delete a user by ID"""
         user = facade.get_user(user_id)
         if not user:
             return {"error": "User not found"}, 404
+        
         facade.delete_user(user_id)
-        return {"message": "User deleted"}, 204
+        return "", 204  # 204 No Content - لا ترجع أي رسالة
