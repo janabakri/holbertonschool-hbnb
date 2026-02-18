@@ -7,18 +7,19 @@ from datetime import datetime
 class Place:
     """Place model for HBnB application"""
     
-    def __init__(self, title, price_per_night, latitude, longitude, owner_id):
+    def __init__(self, name, description="", price_per_night=0.0, latitude=None, longitude=None, owner_id=None):
         """Initialize a new place"""
         self.id = str(uuid.uuid4())
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
-        self.title = title
+        self.name = name
+        self.description = description
         self.price_per_night = float(price_per_night)
-        self.latitude = float(latitude)
-        self.longitude = float(longitude)
+        self.latitude = float(latitude) if latitude is not None else None
+        self.longitude = float(longitude) if longitude is not None else None
         self.owner_id = owner_id
-        self.amenities = []  # List of amenity objects
-        self.reviews = []  # List of review objects
+        self.amenities = []
+        self.reviews = []
     
     def add_amenity(self, amenity):
         """Add an amenity to the place"""
