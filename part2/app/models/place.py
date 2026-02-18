@@ -2,10 +2,7 @@ import uuid
 from datetime import datetime
 
 class Place:
-    """Place model for HBnB application"""
-    
     def __init__(self, name, description="", price_per_night=0.0, latitude=None, longitude=None, owner_id=None):
-        """Initialize a new place"""
         self.id = str(uuid.uuid4())
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
