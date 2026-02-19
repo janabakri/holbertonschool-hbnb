@@ -31,6 +31,7 @@ class HBnBFacade:
     # ========== PLACE OPERATIONS ==========
     def create_place(self, data):
         """Create a new place"""
+        from app.models.place import Place
         place = Place(
             name=data["name"],
             description=data.get("description", ""),
@@ -48,7 +49,13 @@ class HBnBFacade:
         return self.places.get_all()
 
     def update_place(self, place_id, data):
-        return self.places.update(place_id, data)
+        place = self.get_place(place_id)
+        if not place:
+            return None
+        for key, value in data.items():
+            if hasattr(place, key):
+                setattr(place, key, value)
+        return place
 
     def delete_place(self, place_id):
         return self.places.delete(place_id)
