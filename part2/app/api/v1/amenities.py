@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 Amenity API endpoints with all CRUD operations
 """
@@ -92,3 +93,4 @@ class AmenityResource(Resource):
 
         facade.delete_amenity(amenity_id)
         return "", 204
+
