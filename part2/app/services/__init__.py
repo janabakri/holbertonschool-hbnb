@@ -1,4 +1,8 @@
+#!/usr/bin/python3
 """
-Services package initialization
+Shared Facade instance (singleton) for the entire app.
+All API modules must import this to use the same in-memory repositories.
 """
-__version__ = '1.0.0'
+from app.services.facade import HBnBFacade
+
+facade = HBnBFacade()
