@@ -3,6 +3,7 @@ from datetime import datetime
 
 class Place:
     def __init__(self, name, description, price_per_night, latitude, longitude, owner_id):
+        """Initialize a new place"""
         self.id = str(uuid.uuid4())
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
@@ -25,8 +26,8 @@ class Place:
             'latitude': self.latitude,
             'longitude': self.longitude,
             'owner_id': self.owner_id,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat(),
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'average_rating': self.get_average_rating()
         }
 
