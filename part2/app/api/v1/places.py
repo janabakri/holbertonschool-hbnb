@@ -1,5 +1,5 @@
 """
-Place API endpoints with all validations
+Place API endpoints
 """
 from flask_restx import Namespace, Resource, fields
 from flask import request
