@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 Models package initialization
 """
@@ -6,4 +7,4 @@ from .place import Place
 from .review import Review
 from .amenity import Amenity
 
-__all__ = ['User', 'Place', 'Review', 'Amenity']
+__all__ = ["User", "Place", "Review", "Amenity"]
