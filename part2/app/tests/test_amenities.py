@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 Unit tests for Amenity endpoints and models
 """
