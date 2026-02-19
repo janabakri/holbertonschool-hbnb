@@ -46,7 +46,12 @@ class PlaceList(Resource):
     @api.response(400, "Validation Error")
     @api.response(404, "Owner not found")
     def post(self):
+        print("=" * 50)
+        print("PlaceList.POST reached!")
+        print("=" * 50)
+        
         data = request.json
+        print("Data received:", data)
 
         required_fields = ["name", "price_per_night", "latitude", "longitude", "owner_id"]
         for field in required_fields:
@@ -76,12 +81,18 @@ class PlaceList(Resource):
         owner = facade.get_user(data["owner_id"])
         if not owner:
             return {"error": "Owner not found"}, 404
+        print("Owner found:", owner.id)
 
         place = facade.create_place(data)
+        print("Place from facade:", place)
+
         if not place:
             return {"error": "Failed to create place"}, 400
 
-        return place.to_dict(), 201
+        result = place.to_dict()
+        print("Returning:", result)
+        
+        return result, 201
 
     @api.doc("list_places")
     @api.marshal_list_with(place_response)
