@@ -3,12 +3,12 @@ User API endpoints with all CRUD operations
 """
 from flask_restx import Namespace, Resource, fields
 from flask import request
-from app.services.facade import HBnBFacade
 
 api = Namespace("users", description="User operations")
+from app.services.facade import HBnBFacade
+
 facade = HBnBFacade()
 
-# Request models
 user_model = api.model("User", {
     "email": fields.String(required=True, description="User email"),
     "password": fields.String(required=True, description="User password"),
@@ -22,7 +22,6 @@ user_update_model = api.model("UserUpdate", {
     "last_name": fields.String(description="Last name")
 })
 
-# Response model (without password)
 user_response = api.model("UserResponse", {
     "id": fields.String(description="User ID"),
     "email": fields.String(description="User email"),
@@ -32,7 +31,6 @@ user_response = api.model("UserResponse", {
     "updated_at": fields.String(description="Last update timestamp")
 })
 
-
 @api.route("/")
 class UserList(Resource):
     @api.doc("create_user")
@@ -41,10 +39,8 @@ class UserList(Resource):
     @api.response(400, "Validation Error")
     @api.response(409, "Email already exists")
     def post(self):
-        """Create a new user"""
         data = request.json
 
-        # Validate required fields
         required_fields = ['email', 'password', 'first_name', 'last_name']
         for field in required_fields:
             if field not in data:
@@ -52,11 +48,9 @@ class UserList(Resource):
             if not data[field] or data[field].strip() == "":
                 return {"error": f"{field} cannot be empty"}, 400
 
-        # Validate email format
         if "@" not in data["email"]:
             return {"error": "Invalid email format"}, 400
 
-        # Check for duplicate email
         existing_users = facade.get_all_users()
         for user in existing_users:
             if user.email == data["email"]:
@@ -68,10 +62,8 @@ class UserList(Resource):
     @api.doc("list_users")
     @api.marshal_list_with(user_response)
     def get(self):
-        """Get all users"""
         users = facade.get_all_users()
         return [user.to_dict() for user in users], 200
-
 
 @api.route("/<string:user_id>")
 @api.param("user_id", "User identifier")
@@ -80,7 +72,6 @@ class UserResource(Resource):
     @api.marshal_with(user_response)
     @api.response(404, "User not found")
     def get(self, user_id):
-        """Get user by ID"""
         user = facade.get_user(user_id)
         if not user:
             return {"error": "User not found"}, 404
@@ -92,16 +83,13 @@ class UserResource(Resource):
     @api.response(404, "User not found")
     @api.response(400, "Validation Error")
     def put(self, user_id):
-        """Update user information"""
         data = request.json
         if not data:
             return {"error": "No data provided"}, 400
 
-        # Validate email if provided
         if "email" in data and "@" not in data["email"]:
             return {"error": "Invalid email format"}, 400
 
-        # Validate names if provided
         for field in ["first_name", "last_name"]:
             if field in data and data[field].strip() == "":
                 return {"error": f"{field} cannot be empty"}, 400
@@ -116,10 +104,9 @@ class UserResource(Resource):
     @api.response(204, "User deleted")
     @api.response(404, "User not found")
     def delete(self, user_id):
-        """Delete a user by ID"""
         user = facade.get_user(user_id)
         if not user:
             return {"error": "User not found"}, 404
         
         facade.delete_user(user_id)
-        return "", 204  # 204 No Content - لا ترجع أي رسالة
+        return "", 204
