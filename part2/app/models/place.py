@@ -26,6 +26,17 @@ class Place:
         owner: User,
         **kwargs,
     ):
+        """Initialize a new place with all required fields"""
+        print("=" * 50)
+        print("Place.__init__ called with:")
+        print(f"  title: {title}")
+        print(f"  description: {description}")
+        print(f"  price: {price}")
+        print(f"  latitude: {latitude}")
+        print(f"  longitude: {longitude}")
+        print(f"  owner: {owner.id if owner else None}")
+        print("=" * 50)
+        
         # Handle ID, created_at, updated_at from kwargs or create new ones
         self.id = kwargs.get('id', str(uuid.uuid4()))
         self.created_at = kwargs.get('created_at', datetime.utcnow())
@@ -45,6 +56,8 @@ class Place:
 
         if owner:
             owner.add_place(self)
+            
+        print("Place object created with ID:", self.id)
 
     # ============= Properties with Validation =============
 
@@ -126,7 +139,7 @@ class Place:
     @owner.setter
     def owner(self, value: User):
         if value is None:
-            raise ValueError("Owner ID is required")
+            raise ValueError("Owner is required")
         self._owner = value
         self.updated_at = datetime.utcnow()
 
@@ -143,15 +156,19 @@ class Place:
     # ============= Relationship Methods =============
 
     def add_review(self, review: Review):
+        """Add a review to the place"""
         if review not in self._reviews:
             self._reviews.append(review)
             self.save()
+            print(f"Review added to place {self.title}")
 
     def add_amenity(self, amenity: Amenity):
+        """Add an amenity to the place"""
         if amenity not in self._amenities:
             self._amenities.append(amenity)
             self.save()
             amenity.add_place(self)
+            print(f"Amenity {amenity.name if hasattr(amenity, 'name') else amenity.id} added to place {self.title}")
 
     def remove_amenity(self, amenity: Amenity):
         """Remove amenity from place"""
@@ -159,17 +176,19 @@ class Place:
             self._amenities.remove(amenity)
             self.save()
             amenity.remove_place(self)
+            print(f"Amenity removed from place {self.title}")
 
     # ============= Business Methods =============
 
     def save(self):
         """Save the place (update timestamp)"""
         self.updated_at = datetime.utcnow()
-        # In a real app, this would persist to database/storage
+        print(f"Place {self.title} saved (updated at {self.updated_at})")
 
     def create(self):
         """Create the place"""
         self.save()
+        print(f"Place {self.title} created with ID: {self.id}")
 
     def update(self, data: dict):
         """Update place attributes from dictionary"""
@@ -177,26 +196,33 @@ class Place:
             if hasattr(self, key) and key not in ['id', 'created_at', 'updated_at']:
                 setattr(self, key, value)
         self.save()
+        print(f"Place {self.title} updated")
 
     def delete(self):
         """Delete the place"""
+        print(f"Place {self.title} deleted")
         # In a real app, this would remove from database/storage
         pass
 
     def list_reviews(self) -> List[Review]:
         """Get all reviews for this place"""
+        print(f"Listing reviews for place {self.title}: {len(self._reviews)} reviews found")
         return self.reviews
 
     def get_amenities(self) -> List[Amenity]:
         """Get all amenities for this place"""
+        print(f"Getting amenities for place {self.title}: {len(self._amenities)} amenities found")
         return self.amenities
 
     def get_average_rating(self) -> float:
         """Calculate average rating from all reviews"""
         if not self._reviews:
+            print(f"No reviews for place {self.title}, average rating: 0.0")
             return 0.0
         total = sum(r.rating for r in self._reviews)
-        return round(total / len(self._reviews), 1)
+        avg = round(total / len(self._reviews), 1)
+        print(f"Average rating for place {self.title}: {avg} ({len(self._reviews)} reviews)")
+        return avg
 
     # ============= Validation =============
 
@@ -208,15 +234,17 @@ class Place:
             _ = self.latitude
             _ = self.longitude
             _ = self.owner
+            print(f"Place {self.title} validation: PASSED")
             return True
-        except (ValueError, AttributeError):
+        except (ValueError, AttributeError) as e:
+            print(f"Place validation: FAILED - {e}")
             return False
 
     # ============= Serialization =============
 
     def to_dict(self) -> dict:
         """Convert place to dictionary representation"""
-        return {
+        dict_repr = {
             "id": self.id,
             "title": self.title,
             "description": self.description,
@@ -229,6 +257,8 @@ class Place:
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
+        print(f"Place {self.title} converted to dict")
+        return dict_repr
 
     def __str__(self) -> str:
         return f"[Place] {self.title}"
