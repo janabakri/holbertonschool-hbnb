@@ -1,43 +1,57 @@
-class InMemoryRepository:
+from abc import ABC, abstractmethod
+
+
+class Repository(ABC):
+    @abstractmethod
+    def add(self, obj):
+        pass
+
+    @abstractmethod
+    def get(self, obj_id):
+        pass
+
+    @abstractmethod
+    def get_all(self):
+        pass
+
+    @abstractmethod
+    def update(self, obj_id, data):
+        pass
+
+    @abstractmethod
+    def delete(self, obj_id):
+        pass
+
+    @abstractmethod
+    def get_by_attribute(self, attr_name, attr_value):
+        pass
+
+
+class InMemoryRepository(Repository):
     def __init__(self):
         self.storage = {}
 
     def add(self, obj):
-        """Add object to storage"""
-        if not hasattr(obj, 'id'):
-            return None
         self.storage[obj.id] = obj
-        return obj
 
     def get(self, obj_id):
-        """Get object by ID"""
         return self.storage.get(obj_id)
 
     def get_all(self):
-        """Get all objects"""
         return list(self.storage.values())
 
-    def update(self, obj_id, data):
-        """Update object"""
-        obj = self.get(obj_id)
-        if not obj:
-            return None
-        for key, value in data.items():
-            if hasattr(obj, key):
-                setattr(obj, key, value)
-        return obj
+    def update(self, obj_id, obj):
+        """Store the updated object directly."""
+        if obj_id in self.storage:
+            self.storage[obj_id] = obj
 
     def delete(self, obj_id):
-        """Delete object"""
         if obj_id in self.storage:
             del self.storage[obj_id]
-            return True
-        return False
 
-    def exists(self, obj_id):
-        """Check if object exists"""
-        return obj_id in self.storage
-
-    def count(self):
-        """Get count of objects"""
-        return len(self.storage)
+    def get_by_attribute(self, attr_name, attr_value):
+        return next(
+            (obj for obj in self.storage.values()
+             if getattr(obj, attr_name, None) == attr_value),
+            None,
+        )
