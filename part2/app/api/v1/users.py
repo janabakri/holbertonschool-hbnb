@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 User API endpoints with all CRUD operations
 """
