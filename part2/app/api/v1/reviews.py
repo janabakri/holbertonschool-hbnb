@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 Review API endpoints with all CRUD operations
 """
@@ -122,3 +123,4 @@ class ReviewResource(Resource):
 
         facade.delete_review(review_id)
         return "", 204
+
