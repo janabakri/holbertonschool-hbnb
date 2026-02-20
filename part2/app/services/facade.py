@@ -177,14 +177,17 @@ class HBnBFacade:
                 raise ValueError(f"Amenity {amenity_id} not found")
             amenities.append(amenity)
 
-        place = Place(
-            title=place_data.get("title"),
-            description=place_data.get("description", ""),
-            owner=owner,
-            latitude=place_data.get("latitude", 0.0),
-            longitude=place_data.get("longitude", 0.0),
-            price=place_data.get("price", 0.0),
-        )
+        title = place_data.get("title") or place_data.get("name")
+        price = place_data.get("price") or place_data.get("price_per_night")
+
+    place = Place(
+    title=title,
+    description=place_data.get("description", ""),
+    owner=owner,
+    latitude=place_data.get("latitude", 0.0),
+    longitude=place_data.get("longitude", 0.0),
+    price=price,
+)
 
         for amenity in amenities:
             if hasattr(place, "add_amenity"):
