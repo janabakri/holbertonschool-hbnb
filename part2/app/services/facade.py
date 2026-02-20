@@ -95,7 +95,7 @@ class HBnBFacade:
     # ------------------ AMENITIES ------------------
     def create_amenity(self, amenity_data):
         if "name" not in amenity_data or not amenity_data.get("name"):
-    return {"error": "name is required"}, 400
+         return {"error": "name is required"}, 400
         amenity = Amenity(
             name=amenity_data["name"],
             description=amenity_data.get("description", "")
