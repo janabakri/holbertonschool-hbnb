@@ -1,23 +1,9 @@
 from flask_restx import Namespace, Resource, fields
-from flask import request
-from app.services.facade import HBnBFacade
+from flask import request, current_app
 
 api = Namespace('places', description='Place operations')
-facade = HBnBFacade()
 
 # Define models for Swagger
-amenity_model = api.model('PlaceAmenity', {
-    'id': fields.String(description='Amenity ID'),
-    'name': fields.String(description='Amenity name')
-})
-
-user_summary_model = api.model('UserSummary', {
-    'id': fields.String(description='User ID'),
-    'first_name': fields.String(description='User first name'),
-    'last_name': fields.String(description='User last name'),
-    'email': fields.String(description='User email')
-})
-
 place_input_model = api.model('PlaceInput', {
     'title': fields.String(required=True, description='Place title'),
     'description': fields.String(description='Place description'),
@@ -35,8 +21,6 @@ place_output_model = api.model('Place', {
     'latitude': fields.Float(description='Latitude coordinate'),
     'longitude': fields.Float(description='Longitude coordinate'),
     'owner_id': fields.String(description='Owner ID'),
-    'owner': fields.Nested(user_summary_model, description='Owner details'),
-    'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
     'created_at': fields.String(description='Creation timestamp'),
     'updated_at': fields.String(description='Last update timestamp')
 })
@@ -49,6 +33,8 @@ class PlaceList(Resource):
     @api.response(404, 'Owner not found')
     def post(self):
         """Create a new place"""
+        # Get the shared facade instance from app config
+        facade = current_app.config['facade']
         data = request.json
         result, status_code = facade.create_place(data)
         
@@ -60,6 +46,7 @@ class PlaceList(Resource):
     @api.marshal_list_with(place_output_model)
     def get(self):
         """Get all places"""
+        facade = current_app.config['facade']
         result, status_code = facade.get_all_places()
         return result, status_code
 
@@ -69,6 +56,7 @@ class PlaceResource(Resource):
     @api.marshal_with(place_output_model)
     def get(self, place_id):
         """Get a place by ID"""
+        facade = current_app.config['facade']
         result, status_code = facade.get_place(place_id)
         
         if status_code != 200:
@@ -81,6 +69,7 @@ class PlaceResource(Resource):
     @api.response(400, 'Validation Error')
     def put(self, place_id):
         """Update a place"""
+        facade = current_app.config['facade']
         data = request.json
         result, status_code = facade.update_place(place_id, data)
         
