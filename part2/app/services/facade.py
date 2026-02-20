@@ -60,20 +60,56 @@ class HBnBFacade:
     def create_place(self, place_data):
         """Create a new place with validation"""
         try:
+            owner_id = place_data.get('owner_id')
+            print(f"\n=== DEBUG PLACE CREATION ===")
+            print(f"Looking for owner with ID: {owner_id}")
+            print(f"ID type: {type(owner_id)}")
+            
+            # Debug: List all users in repository
+            all_users = self.user_repo.get_all()
+            print(f"Total users in repo: {len(all_users)}")
+            for u in all_users:
+                print(f"  - ID: {u.id}")
+                print(f"    Name: {u.first_name} {u.last_name}")
+                print(f"    Email: {u.email}")
+                print(f"    Has places attr: {hasattr(u, 'places')}")
+            
             # Verify owner exists
-            owner = self.user_repo.get(place_data.get('owner_id'))
+            owner = self.user_repo.get(owner_id)
+            print(f"Owner found: {owner is not None}")
+            
             if not owner:
-                return {'error': 'Owner not found'}, 400
+                print(f"Owner NOT found with ID: {owner_id}")
+                return {'error': f'Owner not found with ID: {owner_id}'}, 400
+            
+            print(f"Owner found: {owner.first_name} {owner.last_name}")
+            print(f"Owner places before: {owner.places if hasattr(owner, 'places') else 'No places attr'}")
             
             place = Place(**place_data)
+            print(f"Place created with ID: {place.id}")
+            
             self.place_repo.add(place)
+            print(f"Place added to repository")
             
             # Add place to owner's places list
-            owner.places.append(place.id)
+            if hasattr(owner, 'places'):
+                owner.places.append(place.id)
+                print(f"Added place to owner's places list")
+                print(f"Owner places after: {owner.places}")
+            else:
+                print(f"WARNING: Owner has no 'places' attribute!")
+            
+            print("=== END DEBUG ===\n")
             
             return place.to_dict(), 201
         except ValueError as e:
+            print(f"ValueError in create_place: {str(e)}")
             return {'error': str(e)}, 400
+        except Exception as e:
+            print(f"Unexpected error in create_place: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return {'error': 'Internal server error'}, 500
     
     def get_place(self, place_id):
         """Get place by ID"""
