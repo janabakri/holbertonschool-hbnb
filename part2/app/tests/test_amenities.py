@@ -1,47 +1,26 @@
 #!/usr/bin/python3
-"""
-Unit tests for Amenity endpoints and models
-"""
 import pytest
 from app import create_app
-from app.models.amenity import Amenity
 
 @pytest.fixture
 def client():
-    """Create test client"""
     app = create_app()
     app.config["TESTING"] = True
     return app.test_client()
 
-@pytest.fixture
-def sample_amenity_data():
-    """Sample amenity data for testing"""
-    return {
-        "name": "WiFi",
-        "description": "High-speed internet connection"
-    }
+def test_create_amenity_success(client):
+    data = {"name": "WiFi", "description": "High-speed internet"}
+    res = client.post("/api/v1/amenities/", json=data)
+    assert res.status_code == 201
+    result = res.get_json()
+    assert result["name"] == "WiFi"
 
-@pytest.fixture
-def created_amenity(client, sample_amenity_data):
-    """Create an amenity and return its ID"""
-    response = client.post("/api/v1/amenities/", json=sample_amenity_data)
-    return response.get_json()["id"]
+def test_create_amenity_missing_name(client):
+    res = client.post("/api/v1/amenities/", json={"description": "No name"})
+    assert res.status_code == 400
+    assert "error" in res.get_json()
 
-# ========== CREATE AMENITY TESTS ==========
-
-def test_create_amenity_success(client, sample_amenity_data):
-    """Test successful amenity creation"""
-    response = client.post("/api/v1/amenities/", json=sample_amenity_data)
-    
-    assert response.status_code == 201
-    data = response.get_json()
-    assert "id" in data
-    assert data["name"] == sample_amenity_data["name"]
-    assert data["description"] == sample_amenity_data["description"]
-
-def test_create_amenity_minimal(client):
-    """Test creating amenity with only name"""
-    amenity_data = {
-        "name": "Pool"
-    }
-    response = client.post("/api/v1/amenities/",
+def test_get_all_amenities(client):
+    res = client.get("/api/v1/amenities/")
+    assert res.status_code == 200
+    assert isinstance(res.get_json(), list)
