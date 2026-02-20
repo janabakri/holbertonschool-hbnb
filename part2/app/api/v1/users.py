@@ -1,9 +1,7 @@
 from flask_restx import Namespace, Resource, fields
-from flask import request
-from app.services.facade import HBnBFacade
+from flask import request, current_app
 
 api = Namespace('users', description='User operations')
-facade = HBnBFacade()
 
 # Define models for Swagger
 user_input_model = api.model('UserInput', {
@@ -31,6 +29,8 @@ class UserList(Resource):
     @api.response(409, 'Email already exists')
     def post(self):
         """Create a new user"""
+        # Get the shared facade instance from app config
+        facade = current_app.config['facade']
         data = request.json
         result, status_code = facade.create_user(data)
         
@@ -42,6 +42,7 @@ class UserList(Resource):
     @api.marshal_list_with(user_output_model)
     def get(self):
         """Get all users"""
+        facade = current_app.config['facade']
         result, status_code = facade.get_all_users()
         return result, status_code
 
@@ -51,6 +52,7 @@ class UserResource(Resource):
     @api.marshal_with(user_output_model)
     def get(self, user_id):
         """Get a user by ID"""
+        facade = current_app.config['facade']
         result, status_code = facade.get_user(user_id)
         
         if status_code != 200:
@@ -64,6 +66,7 @@ class UserResource(Resource):
     @api.response(409, 'Email already exists')
     def put(self, user_id):
         """Update a user"""
+        facade = current_app.config['facade']
         data = request.json
         result, status_code = facade.update_user(user_id, data)
         
