@@ -1,197 +1,90 @@
-#!/usr/bin/python3
-"""
-Place API endpoints
-"""
 from flask_restx import Namespace, Resource, fields
 from flask import request
 from app.services.facade import HBnBFacade
 
-api = Namespace("places", description="Place operations")
+api = Namespace('places', description='Place operations')
 facade = HBnBFacade()
 
-place_model = api.model("Place", {
-    "name": fields.String(required=True, description="Place name"),
-    "description": fields.String(description="Place description"),
-    "price_per_night": fields.Float(required=True, description="Price per night"),
-    "latitude": fields.Float(required=True, description="Latitude (-90 to 90)"),
-    "longitude": fields.Float(required=True, description="Longitude (-180 to 180)"),
-    "owner_id": fields.String(required=True, description="Owner ID")
+# Define models for Swagger
+amenity_model = api.model('PlaceAmenity', {
+    'id': fields.String(description='Amenity ID'),
+    'name': fields.String(description='Amenity name')
 })
 
-place_update_model = api.model("PlaceUpdate", {
-    "name": fields.String(description="Place name"),
-    "description": fields.String(description="Place description"),
-    "price_per_night": fields.Float(description="Price per night"),
-    "latitude": fields.Float(description="Latitude (-90 to 90)"),
-    "longitude": fields.Float(description="Longitude (-180 to 180)")
+user_summary_model = api.model('UserSummary', {
+    'id': fields.String(description='User ID'),
+    'first_name': fields.String(description='User first name'),
+    'last_name': fields.String(description='User last name'),
+    'email': fields.String(description='User email')
 })
 
-place_response = api.model("PlaceResponse", {
-    "id": fields.String(description="Place ID"),
-    "name": fields.String(description="Place name"),
-    "description": fields.String(description="Place description"),
-    "price_per_night": fields.Float(description="Price per night"),
-    "latitude": fields.Float(description="Latitude"),
-    "longitude": fields.Float(description="Longitude"),
-    "owner_id": fields.String(description="Owner ID"),
-    "created_at": fields.String(description="Creation timestamp"),
-    "updated_at": fields.String(description="Last update timestamp"),
-    "average_rating": fields.Float(description="Average rating")
+place_input_model = api.model('PlaceInput', {
+    'title': fields.String(required=True, description='Place title'),
+    'description': fields.String(description='Place description'),
+    'price': fields.Float(required=True, description='Price per night'),
+    'latitude': fields.Float(description='Latitude coordinate'),
+    'longitude': fields.Float(description='Longitude coordinate'),
+    'owner_id': fields.String(required=True, description='ID of the owner')
 })
 
-@api.route("/")
+place_output_model = api.model('Place', {
+    'id': fields.String(description='Place ID'),
+    'title': fields.String(description='Place title'),
+    'description': fields.String(description='Place description'),
+    'price': fields.Float(description='Price per night'),
+    'latitude': fields.Float(description='Latitude coordinate'),
+    'longitude': fields.Float(description='Longitude coordinate'),
+    'owner_id': fields.String(description='Owner ID'),
+    'owner': fields.Nested(user_summary_model, description='Owner details'),
+    'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
+    'created_at': fields.String(description='Creation timestamp'),
+    'updated_at': fields.String(description='Last update timestamp')
+})
+
+@api.route('/')
 class PlaceList(Resource):
-    @api.doc("create_place")
-    @api.expect(place_model)
-    @api.marshal_with(place_response, code=201)
-    @api.response(400, "Validation Error")
-    @api.response(404, "Owner not found")
+    @api.expect(place_input_model)
+    @api.marshal_with(place_output_model, code=201)
+    @api.response(400, 'Validation Error')
+    @api.response(404, 'Owner not found')
     def post(self):
-        print("=" * 50)
-        print("PlaceList.POST reached!")
-        print("=" * 50)
-        
+        """Create a new place"""
         data = request.json
-        print("Data received:", data)
-
-        required_fields = ["name", "price_per_night", "latitude", "longitude", "owner_id"]
-        for field in required_fields:
-            if field not in data:
-                return {"error": f"Missing field: {field}"}, 400
-
-        if not data["name"] or data["name"].strip() == "":
-            return {"error": "Name cannot be empty"}, 400
-
-        try:
-            price = float(data["price_per_night"])
-            if price <= 0:
-                return {"error": "Price must be positive"}, 400
-        except ValueError:
-            return {"error": "Invalid price format"}, 400
-
-        try:
-            lat = float(data["latitude"])
-            lon = float(data["longitude"])
-            if lat < -90 or lat > 90:
-                return {"error": "Latitude must be between -90 and 90"}, 400
-            if lon < -180 or lon > 180:
-                return {"error": "Longitude must be between -180 and 180"}, 400
-        except ValueError:
-            return {"error": "Invalid coordinate format"}, 400
-
-        owner = facade.get_user(data["owner_id"])
-        if not owner:
-            return {"error": "Owner not found"}, 404
-        print("Owner found:", owner.id)
-
-        place = facade.create_place(data)
-        print("Place from facade:", place)
-
-        if not place:
-            return {"error": "Failed to create place"}, 400
-
-        result = place.to_dict()
-        print("Returning:", result)
+        result, status_code = facade.create_place(data)
         
-        return result, 201
-
-    @api.doc("list_places")
-    @api.marshal_list_with(place_response)
+        if status_code != 201:
+            api.abort(status_code, result['error'])
+        
+        return result, status_code
+    
+    @api.marshal_list_with(place_output_model)
     def get(self):
-        places = facade.get_all_places()
-        return [place.to_dict() for place in places], 200
+        """Get all places"""
+        result, status_code = facade.get_all_places()
+        return result, status_code
 
-@api.route("/<string:place_id>")
-@api.param("place_id", "Place identifier")
+@api.route('/<string:place_id>')
+@api.response(404, 'Place not found')
 class PlaceResource(Resource):
-    @api.doc("get_place")
-    @api.marshal_with(place_response)
-    @api.response(404, "Place not found")
+    @api.marshal_with(place_output_model)
     def get(self, place_id):
-        place = facade.get_place(place_id)
-        if not place:
-            return {"error": "Place not found"}, 404
-        return place.to_dict(), 200
-
-    @api.doc("update_place")
-    @api.expect(place_update_model)
-    @api.marshal_with(place_response)
-    @api.response(404, "Place not found")
-    @api.response(400, "Validation Error")
+        """Get a place by ID"""
+        result, status_code = facade.get_place(place_id)
+        
+        if status_code != 200:
+            api.abort(status_code, result['error'])
+        
+        return result, status_code
+    
+    @api.expect(place_input_model)
+    @api.marshal_with(place_output_model)
+    @api.response(400, 'Validation Error')
     def put(self, place_id):
+        """Update a place"""
         data = request.json
-
-        if not data:
-            return {"error": "No data provided"}, 400
-
-        if "price_per_night" in data:
-            try:
-                price = float(data["price_per_night"])
-                if price <= 0:
-                    return {"error": "Price must be positive"}, 400
-            except ValueError:
-                return {"error": "Invalid price format"}, 400
-
-        if "latitude" in data:
-            try:
-                lat = float(data["latitude"])
-                if lat < -90 or lat > 90:
-                    return {"error": "Latitude must be between -90 and 90"}, 400
-            except ValueError:
-                return {"error": "Invalid latitude format"}, 400
-
-        if "longitude" in data:
-            try:
-                lon = float(data["longitude"])
-                if lon < -180 or lon > 180:
-                    return {"error": "Longitude must be between -180 and 180"}, 400
-            except ValueError:
-                return {"error": "Invalid longitude format"}, 400
-
-        place = facade.update_place(place_id, data)
-        if not place:
-            return {"error": "Place not found"}, 404
-
-        return place.to_dict(), 200
-
-    @api.doc("delete_place")
-    @api.response(204, "Place deleted")
-    @api.response(404, "Place not found")
-    def delete(self, place_id):
-        place = facade.get_place(place_id)
-        if not place:
-            return {"error": "Place not found"}, 404
+        result, status_code = facade.update_place(place_id, data)
         
-        facade.delete_place(place_id)
-        return "", 204
-
-@api.route("/<string:place_id>/amenities/<string:amenity_id>")
-@api.param("place_id", "Place identifier")
-@api.param("amenity_id", "Amenity identifier")
-class PlaceAmenityResource(Resource):
-    @api.doc("add_amenity_to_place")
-    @api.response(200, "Amenity added")
-    @api.response(404, "Place or amenity not found")
-    def post(self, place_id, amenity_id):
-        place = facade.get_place(place_id)
-        amenity = facade.get_amenity(amenity_id)
+        if status_code != 200:
+            api.abort(status_code, result['error'])
         
-        if not place or not amenity:
-            return {"error": "Place or amenity not found"}, 404
-        
-        place.amenities.append(amenity)
-        return {"message": "Amenity added successfully"}, 200
-
-@api.route("/<string:place_id>/reviews")
-@api.param("place_id", "Place identifier")
-class PlaceReviewsResource(Resource):
-    @api.doc("get_place_reviews")
-    @api.response(200, "Success")
-    @api.response(404, "Place not found")
-    def get(self, place_id):
-        place = facade.get_place(place_id)
-        if not place:
-            return {"error": "Place not found"}, 404
-        
-        reviews = [review.to_dict() for review in place.reviews]
-        return reviews, 200
+        return result, status_code
