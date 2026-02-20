@@ -1,4 +1,3 @@
-"""
-Persistence package initialization
-"""
-__version__ = '1.0.0'
+from app.persistence.repository import InMemoryRepository
+
+__all__ = ['InMemoryRepository']
