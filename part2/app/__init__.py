@@ -1,13 +1,13 @@
-#!/usr/bin/python3
 from flask import Flask
 from flask_restx import Api
-from app.services.facade import HBnBFacade
+from config import Config
+from app.api.v1 import api as api_v1
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
-    api = Api(app, title='HBnB API', version='1.0', description='HBnB Application API')
+    app.config.from_object(config_class)
     
-    from app.api.v1 import bp as api_bp
-    app.register_blueprint(api_bp)
+    # Initialize API
+    api_v1.init_app(app)
     
     return app
