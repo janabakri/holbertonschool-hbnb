@@ -1,96 +1,65 @@
-#!/usr/bin/python3
-"""
-Amenity API endpoints with all CRUD operations
-"""
 from flask_restx import Namespace, Resource, fields
-from app.services.facade import HBnBFacade
 from flask import request
+from app.services.facade import HBnBFacade
 
-api = Namespace("amenities", description="Amenity operations")
+api = Namespace('amenities', description='Amenity operations')
 facade = HBnBFacade()
 
-amenity_model = api.model("Amenity", {
-    "name": fields.String(required=True, description="Amenity name"),
-    "description": fields.String(description="Amenity description")
+# Define models for Swagger
+amenity_input_model = api.model('AmenityInput', {
+    'name': fields.String(required=True, description='Amenity name')
 })
 
-amenity_update_model = api.model("AmenityUpdate", {
-    "name": fields.String(description="Amenity name"),
-    "description": fields.String(description="Amenity description")
+amenity_output_model = api.model('Amenity', {
+    'id': fields.String(description='Amenity ID'),
+    'name': fields.String(description='Amenity name'),
+    'created_at': fields.String(description='Creation timestamp'),
+    'updated_at': fields.String(description='Last update timestamp')
 })
 
-amenity_response = api.model("AmenityResponse", {
-    "id": fields.String(description="Amenity ID"),
-    "name": fields.String(description="Amenity name"),
-    "description": fields.String(description="Amenity description"),
-    "created_at": fields.String(description="Creation timestamp"),
-    "updated_at": fields.String(description="Last update timestamp")
-})
-
-@api.route("/")
+@api.route('/')
 class AmenityList(Resource):
-    @api.doc("create_amenity")
-    @api.expect(amenity_model)
-    @api.marshal_with(amenity_response, code=201)
-    @api.response(400, "Validation Error")
+    @api.expect(amenity_input_model)
+    @api.marshal_with(amenity_output_model, code=201)
+    @api.response(400, 'Validation Error')
     def post(self):
+        """Create a new amenity"""
         data = request.json
-
-        if "name" not in data:
-            return {"error": "Name is required"}, 400
-
-        if not data["name"] or data["name"].strip() == "":
-            return {"error": "Name cannot be empty"}, 400
-
-        amenity = facade.create_amenity(data)
-        return amenity.to_dict(), 201
-
-    @api.doc("list_amenities")
-    @api.marshal_list_with(amenity_response)
+        result, status_code = facade.create_amenity(data)
+        
+        if status_code != 201:
+            api.abort(status_code, result['error'])
+        
+        return result, status_code
+    
+    @api.marshal_list_with(amenity_output_model)
     def get(self):
-        amenities = facade.get_all_amenities()
-        return [amenity.to_dict() for amenity in amenities], 200
+        """Get all amenities"""
+        result, status_code = facade.get_all_amenities()
+        return result, status_code
 
-@api.route("/<string:amenity_id>")
-@api.param("amenity_id", "Amenity identifier")
+@api.route('/<string:amenity_id>')
+@api.response(404, 'Amenity not found')
 class AmenityResource(Resource):
-    @api.doc("get_amenity")
-    @api.marshal_with(amenity_response)
-    @api.response(404, "Amenity not found")
+    @api.marshal_with(amenity_output_model)
     def get(self, amenity_id):
-        amenity = facade.get_amenity(amenity_id)
-        if not amenity:
-            return {"error": "Amenity not found"}, 404
-        return amenity.to_dict(), 200
-
-    @api.doc("update_amenity")
-    @api.expect(amenity_update_model)
-    @api.marshal_with(amenity_response)
-    @api.response(404, "Amenity not found")
-    @api.response(400, "Validation Error")
+        """Get an amenity by ID"""
+        result, status_code = facade.get_amenity(amenity_id)
+        
+        if status_code != 200:
+            api.abort(status_code, result['error'])
+        
+        return result, status_code
+    
+    @api.expect(amenity_input_model)
+    @api.marshal_with(amenity_output_model)
+    @api.response(400, 'Validation Error')
     def put(self, amenity_id):
+        """Update an amenity"""
         data = request.json
-
-        if not data:
-            return {"error": "No data provided"}, 400
-
-        if "name" in data and data["name"].strip() == "":
-            return {"error": "Name cannot be empty"}, 400
-
-        amenity = facade.update_amenity(amenity_id, data)
-        if not amenity:
-            return {"error": "Amenity not found"}, 404
-
-        return amenity.to_dict(), 200
-
-    @api.doc("delete_amenity")
-    @api.response(204, "Amenity deleted")
-    @api.response(404, "Amenity not found")
-    def delete(self, amenity_id):
-        amenity = facade.get_amenity(amenity_id)
-        if not amenity:
-            return {"error": "Amenity not found"}, 404
-
-        facade.delete_amenity(amenity_id)
-        return "", 204
-
+        result, status_code = facade.update_amenity(amenity_id, data)
+        
+        if status_code != 200:
+            api.abort(status_code, result['error'])
+        
+        return result, status_code
