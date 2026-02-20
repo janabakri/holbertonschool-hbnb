@@ -1,36 +1,36 @@
 #!/usr/bin/python3
-"""
-HBnBFacade: Unified interface for Users, Amenities, Places, and Reviews
-"""
+"""Facade for HBnB project"""
 
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
-from app.models.amenity import Amenity
 from app.models.place import Place
+from app.models.amenity import Amenity
 from app.models.review import Review
 
-
 class HBnBFacade:
+    """Facade to handle Users, Places, Amenities, and Reviews"""
+
     def __init__(self):
         self.user_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
+        self.amenity_repo = InMemoryRepository()
         self.review_repo = InMemoryRepository()
 
     # ------------------ HELPERS ------------------
     @staticmethod
     def _normalize_amenities_ids(payload: dict) -> list:
-        """Normalize amenities payload to a list of unique IDs"""
         ids = []
+
         if "amenities" in payload and isinstance(payload["amenities"], list):
             for item in payload["amenities"]:
                 if isinstance(item, dict) and "id" in item:
                     ids.append(item["id"])
                 elif isinstance(item, str):
                     ids.append(item)
+
         if "amenity_ids" in payload and isinstance(payload["amenity_ids"], list):
             ids.extend(payload["amenity_ids"])
-        # remove duplicates, preserve order
+
         seen = set()
         cleaned = []
         for x in ids:
@@ -52,10 +52,12 @@ class HBnBFacade:
     def create_user(self, user_data):
         required = ("email", "first_name", "last_name")
         for field in required:
-            if field not in user_data or not user_data[field]:
+            if field not in user_data or user_data[field] in (None, ""):
                 raise ValueError(f"{field} is required")
+
         if self.get_user_by_email(user_data["email"]):
             raise ValueError("Email already registered")
+
         user = User(**user_data)
         self.user_repo.add(user)
         return user
@@ -73,14 +75,17 @@ class HBnBFacade:
         user = self.user_repo.get(user_id)
         if not user:
             return None
+
         if "email" in user_data and user_data["email"]:
             if user_data["email"] != user.email:
                 existing = self.get_user_by_email(user_data["email"])
                 if existing and existing.id != user_id:
                     raise ValueError("Email already registered")
+
         for field in ("first_name", "last_name", "email"):
             if field in user_data and user_data[field] is not None:
                 setattr(user, field, user_data[field])
+
         user.save()
         self.user_repo.update(user_id, user)
         return user
@@ -95,9 +100,10 @@ class HBnBFacade:
     # ------------------ AMENITIES ------------------
     def create_amenity(self, amenity_data):
         if "name" not in amenity_data or not amenity_data.get("name"):
-         return {"error": "name is required"}, 400
+            return {"error": "name is required"}, 400
+
         amenity = Amenity(
-            name=amenity_data["name"],
+            name=amenity_data.get("name"),
             description=amenity_data.get("description", "")
         )
         self.amenity_repo.add(amenity)
@@ -113,12 +119,15 @@ class HBnBFacade:
         amenity = self.amenity_repo.get(amenity_id)
         if not amenity:
             return None
+
         if "name" in amenity_data:
             if not amenity_data["name"]:
-                raise ValueError("name is required")
+                return {"error": "name is required"}, 400
             amenity.name = amenity_data["name"]
+
         if "description" in amenity_data and amenity_data["description"] is not None:
             amenity.description = amenity_data["description"]
+
         amenity.save()
         self.amenity_repo.update(amenity_id, amenity)
         return amenity
@@ -137,39 +146,20 @@ class HBnBFacade:
         if not owner:
             raise ValueError("Owner not found")
 
-        amenity_ids = place_data.get("amenity_ids")
-        if amenity_ids is None:
-            amenities_payload = place_data.get("amenities", [])
-            amenity_ids = []
-            for item in amenities_payload:
-                if isinstance(item, dict) and "id" in item:
-                    amenity_ids.append(item["id"])
-                elif isinstance(item, str):
-                    amenity_ids.append(item)
-        amenities = []
-        for amenity_id in amenity_ids or []:
-            amenity = self.get_amenity(amenity_id)
-            if not amenity:
-                raise ValueError(f"Amenity {amenity_id} not found")
-            amenities.append(amenity)
-
-        title = place_data.get("title") or place_data.get("name")
-        price = place_data.get("price") or place_data.get("price_per_night")
+        amenity_ids = self._normalize_amenities_ids(place_data)
+        amenities = self._resolve_amenities(amenity_ids)
 
         place = Place(
-            title=title,
+            title=place_data.get("title"),
             description=place_data.get("description", ""),
             owner=owner,
             latitude=place_data.get("latitude", 0.0),
             longitude=place_data.get("longitude", 0.0),
-            price=price,
+            price=place_data.get("price", 0.0),
         )
 
         for amenity in amenities:
-            if hasattr(place, "add_amenity"):
-                place.add_amenity(amenity)
-            elif hasattr(place, "amenities"):
-                place.amenities.append(amenity)
+            place.add_amenity(amenity)
 
         self.place_repo.add(place)
         return place
@@ -184,6 +174,7 @@ class HBnBFacade:
         place = self.place_repo.get(place_id)
         if not place:
             return None
+
         for field in ("title", "description", "latitude", "longitude", "price"):
             if field in place_data:
                 setattr(place, field, place_data[field])
@@ -194,25 +185,12 @@ class HBnBFacade:
                 raise ValueError("New owner not found")
             place.owner = new_owner
 
-        amenity_ids = place_data.get("amenity_ids")
-        if amenity_ids is None and "amenities" in place_data:
-            amenity_ids = []
-            for item in place_data.get("amenities", []):
-                if isinstance(item, dict) and "id" in item:
-                    amenity_ids.append(item["id"])
-                elif isinstance(item, str):
-                    amenity_ids.append(item)
-        if amenity_ids is not None:
-            if hasattr(place, "amenities"):
-                place.amenities = []
-            for amenity_id in amenity_ids:
-                amenity = self.get_amenity(amenity_id)
-                if not amenity:
-                    raise ValueError(f"Amenity {amenity_id} not found")
-                if hasattr(place, "add_amenity"):
-                    place.add_amenity(amenity)
-                elif hasattr(place, "amenities"):
-                    place.amenities.append(amenity)
+        amenity_ids = self._normalize_amenities_ids(place_data)
+        if amenity_ids:
+            # Reset amenities
+            place._amenities = []
+            for amenity in self._resolve_amenities(amenity_ids):
+                place.add_amenity(amenity)
 
         place.save()
         self.place_repo.update(place_id, place)
@@ -222,8 +200,11 @@ class HBnBFacade:
         place = self.place_repo.get(place_id)
         if not place:
             return False
+
+        # Delete associated reviews
         for review in self.get_reviews_by_place(place_id):
             self.delete_review(review.id)
+
         self.place_repo.delete(place_id)
         return True
 
@@ -233,6 +214,7 @@ class HBnBFacade:
         user_id = review_data.get("user_id")
         place_id = review_data.get("place_id")
         rating = review_data.get("rating")
+
         if not text:
             raise ValueError("text is required")
         if not user_id:
@@ -241,17 +223,24 @@ class HBnBFacade:
             raise ValueError("place_id is required")
         if rating is None:
             raise ValueError("rating is required")
+
         if not self.get_user(user_id):
             raise ValueError("User not found")
         if not self.get_place(place_id):
             raise ValueError("Place not found")
+
         if self.get_review_by_user_and_place(user_id, place_id):
             raise ValueError("Review already exists for this user and place")
 
-        review = Review(text=text, rating=rating, user_id=user_id, place_id=place_id)
+        review = Review(
+            text=text,
+            rating=rating,
+            user_id=user_id,
+            place_id=place_id
+        )
         self.review_repo.add(review)
         place = self.get_place(place_id)
-        if place and hasattr(place, "add_review"):
+        if place:
             place.add_review(review)
         return review
 
@@ -277,12 +266,15 @@ class HBnBFacade:
         review = self.review_repo.get(review_id)
         if not review:
             return None
+
         if "text" in review_data:
             if not review_data["text"]:
                 raise ValueError("text is required")
             review.text = review_data["text"]
+
         if "rating" in review_data and review_data["rating"] is not None:
             review.rating = review_data["rating"]
+
         review.save()
         self.review_repo.update(review_id, review)
         return review
@@ -291,8 +283,10 @@ class HBnBFacade:
         review = self.review_repo.get(review_id)
         if not review:
             return False
+
         place = self.get_place(review.place_id) if hasattr(review, "place_id") else None
         if place and hasattr(place, "remove_review"):
             place.remove_review(review)
+
         self.review_repo.delete(review_id)
         return True
