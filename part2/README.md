@@ -115,3 +115,16 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 ### Prerequisites
 - Python 3.8+
 - pip (Python package manager)
+
+## Available Endpoints
+
+| Entity | Endpoint | Methods | Description |
+|--------|----------|---------|-------------|
+| Users | `/api/v1/users/` | GET, POST | List all users / Create user |
+| Users | `/api/v1/users/<id>` | GET, PUT | Get / Update user by ID |
+| Places | `/api/v1/places/` | GET, POST | List all places / Create place |
+| Places | `/api/v1/places/<id>` | GET, PUT | Get / Update place by ID |
+| Reviews | `/api/v1/reviews/` | GET, POST | List all reviews / Create review |
+| Reviews | `/api/v1/reviews/<id>` | GET, PUT, DELETE | Get / Update / Delete review |
+| Amenities | `/api/v1/amenities/` | GET, POST | List all amenities / Create amenity |
+| Amenities | `/api/v1/amenities/<id>` | GET, PUT | Get / Update amenity |
