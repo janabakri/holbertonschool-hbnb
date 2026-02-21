@@ -44,3 +44,9 @@ The project follows a **Three-Layer Architecture**, ensuring proper separation b
 - Ensures relationships between entities
 - Hashes passwords before storage
 - Guarantees data consistency and enforces application rules
+
+### 2.3 Persistence Layer
+- Implements an **in-memory repository**
+- Stores objects in dictionary-based storage
+- Provides CRUD operations: create, retrieve, update, delete
+- Isolated layer that can be replaced by a real database in Part 3 without modifying higher layers
