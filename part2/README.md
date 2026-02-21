@@ -79,3 +79,10 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 - Update user profiles
 - Secure password hashing
 - Email uniqueness validation
+
+### Place Management
+- Create property listings
+- Retrieve place details
+- Update listing information
+- Associate places with owners
+- Link amenities
