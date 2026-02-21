@@ -117,15 +117,6 @@ Moderation: Automated and manual review processes
 
 Integrity: One review per verified booking
 
-## Booking Engine
-
-Reservation Logic: Date validation, capacity checks, pricing calculations
-
-Financial Operations: Payment processing, refund calculations
-
-Policies: Cancellation rules, minimum stay requirements
-
-Validation: Prevents overlapping bookings, enforces house rules
 
 ## Amenity Management
 
@@ -228,7 +219,7 @@ Strategy Pattern: Pluggable pricing and validation algorithms
 
 Indexing: Foreign keys, frequently queried fields
 
-Partitioning: Temporal data (reviews, bookings) by date
+Partitioning: Temporal data (reviews) by date
 
 Caching: Frequently accessed places, user sessions
 
