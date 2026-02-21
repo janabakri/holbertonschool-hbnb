@@ -36,3 +36,11 @@ The project follows a **Three-Layer Architecture**, ensuring proper separation b
 - Performs request parsing and validation
 - Returns structured JSON responses
 - Provides automatic Swagger documentation
+
+### 2.2 Business Logic Layer
+- Contains models: **User, Place, Review, Amenity**
+- Implements business rules
+- Applies validation logic
+- Ensures relationships between entities
+- Hashes passwords before storage
+- Guarantees data consistency and enforces application rules
