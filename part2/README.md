@@ -14,3 +14,13 @@ The API allows users to:
 - **Add Amenities**: Define property features
 
 This backend is designed to be easily extendable and ready for database integration in Part 3.
+
+## Key Features
+- Complete CRUD operations for all entities
+- Input validation and structured error handling
+- Password hashing for secure storage
+- UUID-based unique identifiers
+- Swagger documentation (auto-generated)
+- Comprehensive test suite using pytest
+- Clean architecture with clear separation of concerns
+- Modular and scalable codebase
