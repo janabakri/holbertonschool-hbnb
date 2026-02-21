@@ -130,3 +130,9 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 | Reviews | `/api/v1/reviews/<id>` | GET, PUT, DELETE | Get / Update / Delete review |
 | Amenities | `/api/v1/amenities/` | GET, POST | List all amenities / Create amenity |
 | Amenities | `/api/v1/amenities/<id>` | GET, PUT | Get / Update amenity |
+
+## Contributors 
+
+- *Raghad Almalki* – https://github.com/Raghad717  
+- *Rama Alshahri* – https://github.com/csrama  
+- *Jana Bakri* – https://github.com/janabakri
