@@ -28,3 +28,11 @@ This backend is designed to be easily extendable and ready for database integrat
 ## System Architecture
 
 The project follows a **Three-Layer Architecture**, ensuring proper separation between responsibilities.
+
+### 2.1 Presentation Layer
+- Built using **Flask** and **Flask-RESTx**
+- Defines API endpoints
+- Handles HTTP requests and responses
+- Performs request parsing and validation
+- Returns structured JSON responses
+- Provides automatic Swagger documentation
