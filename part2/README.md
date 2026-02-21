@@ -97,3 +97,15 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 - Create amenities
 - List amenities
 - Associate amenities with places
+
+## Technologies Used
+
+| Technology | Purpose | Notes |
+|------------|---------|-------|
+| Python | Programming Language | Industry standard for backend development |
+| Flask | Web Framework | Lightweight and flexible |
+| Flask-RESTx | API Development | Swagger documentation and request parsing |
+| pytest | Testing | Powerful and flexible testing framework |
+| pytest-cov | Coverage | Measures test coverage |
+| UUID | ID Generation | Ensures unique identifiers |
+| hashlib | Password Hashing | Secure password storage |
