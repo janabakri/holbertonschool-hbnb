@@ -55,3 +55,9 @@ The project follows a **Three-Layer Architecture**, ensuring proper separation b
 
 ### 3.1 Facade Pattern
 Located in `app/services/facade.py`, the Facade provides a simplified interface to the internal system components, handling validation, object creation, and storage internally.
+
+**Benefits:**
+- Reduces coupling between layers
+- Simplifies API logic
+- Improves maintainability
+- Eases database integration
