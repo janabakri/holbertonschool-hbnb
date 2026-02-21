@@ -61,3 +61,12 @@ Located in `app/services/facade.py`, the Facade provides a simplified interface 
 - Simplifies API logic
 - Improves maintainability
 - Eases database integration
+
+### 3.2 Repository Pattern
+Located in `app/persistence/repository.py`, the Repository abstracts data storage from business logic.
+
+**Benefits:**
+- Clear separation of concerns
+- Easier unit testing
+- Replaceable storage mechanism
+- Improved modularity
