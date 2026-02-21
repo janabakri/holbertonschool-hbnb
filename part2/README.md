@@ -92,3 +92,8 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 - Associate reviews with users and places
 - Retrieve reviews by place
 - Enforce rating constraints
+
+### Amenity Management
+- Create amenities
+- List amenities
+- Associate amenities with places
