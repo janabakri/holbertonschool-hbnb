@@ -116,6 +116,8 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 - Python 3.8+
 - pip (Python package manager)
 
+  ---
+
 ## Available Endpoints
 
 | Entity | Endpoint | Methods | Description |
