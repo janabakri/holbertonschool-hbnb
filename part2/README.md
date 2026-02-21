@@ -70,3 +70,12 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 - Easier unit testing
 - Replaceable storage mechanism
 - Improved modularity
+
+## Core Functionalities
+
+### User Management
+- Create users
+- Retrieve user information
+- Update user profiles
+- Secure password hashing
+- Email uniqueness validation
