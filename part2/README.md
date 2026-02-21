@@ -24,3 +24,7 @@ This backend is designed to be easily extendable and ready for database integrat
 - Comprehensive test suite using pytest
 - Clean architecture with clear separation of concerns
 - Modular and scalable codebase
+
+## System Architecture
+
+The project follows a **Three-Layer Architecture**, ensuring proper separation between responsibilities.
