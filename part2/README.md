@@ -50,3 +50,8 @@ The project follows a **Three-Layer Architecture**, ensuring proper separation b
 - Stores objects in dictionary-based storage
 - Provides CRUD operations: create, retrieve, update, delete
 - Isolated layer that can be replaced by a real database in Part 3 without modifying higher layers
+
+## Design Patterns Used
+
+### 3.1 Facade Pattern
+Located in `app/services/facade.py`, the Facade provides a simplified interface to the internal system components, handling validation, object creation, and storage internally.
