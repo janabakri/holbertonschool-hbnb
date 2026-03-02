@@ -1,31 +1,22 @@
+from flask_restx import Namespace, Resource, fields
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models.place import Place
-from app.extensions import db
-from app.models.base_model import BaseModel
+from app.services.facade import HBnBFacade
 
-class Place(BaseModel):
-    __tablename__ = "places"
+api = Namespace('places', description='Place operations')
+facade = HBnBFacade()
 
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    price = db.Column(db.Float, nullable=False)
-    owner_id = db.Column(db.String(36), db.ForeignKey("users.id"))
+place_model = api.model('Place', {
+    'name': fields.String(required=True),
+    'description': fields.String,
+})
 
-@places_bp.route("/", methods=["POST"])
-@jwt_required()
-def create_place():
-    data = request.get_json()
-    user_id = get_jwt_identity()
-
-    place = Place(
-        title=data["title"],
-        description=data["description"],
-        price=data["price"],
-        owner_id=user_id
-    )
-
-    db.session.add(place)
-    db.session.commit()
-
-    return {"message": "Place created"}, 201
+@api.route('/')
+class PlaceList(Resource):
+    @jwt_required()
+    @api.expect(place_model)
+    def post(self):
+        user_id = get_jwt_identity()
+        data = request.get_json()
+        place = facade.create_place(user_id=user_id, **data)
+        return place.to_dict(), 201
