@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Any, List
 
-from hbnb.app.models.base_model import BaseModel
-from hbnb.app import db
+from app.models.base_model import BaseModel
+from app.models.base_model import db
+
 
 
 class Place(BaseModel):
