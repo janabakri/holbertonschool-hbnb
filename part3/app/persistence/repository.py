@@ -1,16 +1,18 @@
-from app.extensions import db
-class SQLAlchemyRepository:
+from app.models.user import User
+from app import db
 
-    def add(self, obj):
-        db.session.add(obj)
+
+class UserRepository:
+    @staticmethod
+    def get_by_email(email):
+        return User.query.filter_by(email=email).first()
+
+    @staticmethod
+    def get_by_id(user_id):
+        return User.query.get(user_id)
+
+    @staticmethod
+    def create(user):
+        db.session.add(user)
         db.session.commit()
-
-    def get(self, model, obj_id):
-        return model.query.get(obj_id)
-
-    def get_all(self, model):
-        return model.query.all()
-
-    def delete(self, obj):
-        db.session.delete(obj)
-        db.session.commit()
+        return user
