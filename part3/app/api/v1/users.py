@@ -19,5 +19,5 @@ class UserList(Resource):
     @api.expect(user_model)
     def post(self):
         data = request.get_json()
-        user = facade.create_user(**data)
+        facade.create_user(data)
         return user.to_dict(), 201
