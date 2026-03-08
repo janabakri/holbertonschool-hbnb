@@ -3,8 +3,7 @@ from flask import request
 from app.services.facade import HBnBFacade
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-# Namespace (this must match what __init__.py imports)
-users_bp = Namespace('users', description='User operations')
+api = Namespace('users', description='User operations')
 
 facade = HBnBFacade()
 
