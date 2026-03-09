@@ -7,8 +7,8 @@ class Review(BaseModel):
 
     text = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.String(36), nullable=False)   # FK لاحقًا
-    place_id = db.Column(db.String(36), nullable=False)  # FK لاحقًا
+    user_id = db.Column(db.String(36), db.ForeignKey("users.id"), nullable=False)
+    place_id = db.Column(db.String(36), db.ForeignKey("places.id"), nullable=False)
 
     def __init__(self, text: str, rating: int, user_id: str, place_id: str, **kwargs: Any):
         super().__init__(**kwargs)
