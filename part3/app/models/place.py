@@ -1,6 +1,7 @@
 from typing import Any
 from app.models.base_model import BaseModel
 from app.extensions import db
+from app.models.place_amenity import place_amenity
 
 class Place(BaseModel):
     __tablename__ = "places"
@@ -10,7 +11,15 @@ class Place(BaseModel):
     price = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    owner_id = db.Column(db.String(36), nullable=False)  # FK لاحقًا
+    owner_id = db.Column(db.String(36), db.ForeignKey("users.id"), nullable=False)
+
+    # Relationships
+    reviews = db.relationship("Review", backref="place", cascade="all, delete-orphan")
+    amenities = db.relationship(
+        "Amenity",
+        secondary=place_amenity,
+        backref=db.backref("places", lazy="dynamic")
+    )
 
     def __init__(self, title: str, price: float, latitude: float, longitude: float, owner_id: str, description: str = "", **kwargs: Any):
         super().__init__(**kwargs)
