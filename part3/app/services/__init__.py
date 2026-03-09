@@ -1,1 +1,1 @@
-
+from .facade import HBnBFacade
