@@ -29,6 +29,5 @@ class UserList(Resource):
         return user, status
 
     def get(self):
-        # GET all users
-        users = [user.to_dict() for user in facade.users.get_all()]
-        return users, 200
+        users = facade.get_all_users()  
+        return {"users": [user.to_dict() for user in users]}, 200
