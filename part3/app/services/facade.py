@@ -14,17 +14,19 @@ class HBnBFacade:
 
     # ---------------- USERS ----------------
     def create_user(self, data: dict) -> tuple[dict, int]:
-        user = User(
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            email=data['email']
-        )
-        user.set_password(data['password'])
-        self.users.create(user)
-        return user.to_dict(), 201
-
-    def get_all_users(self):
-    return self.users.get_all()  
+    user = User(
+        first_name=data['first_name'],
+        last_name=data['last_name'],
+        email=data['email']
+    )
+    user.set_password(data['password'])
+    self.users.create(user)
+    
+    return {
+        "id": user.id,
+        "created_at": user.created_at.isoformat(),
+        "updated_at": user.updated_at.isoformat()
+    }, 201
     
     # ---------------- PLACES ----------------
     def create_place(self, user_id: str, **data):
