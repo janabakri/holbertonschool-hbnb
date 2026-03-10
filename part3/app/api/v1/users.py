@@ -4,30 +4,36 @@ from app.models.user import User
 from app.services.facade import HBnBFacade
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-# Define the namespace variable as 'api'
+# تعريف namespace
 api = Namespace('users', description='User operations')
 
+# إنشاء facade
 facade = HBnBFacade()
 
-# Use 'api' here instead of 'users_bp'
+# نموذج البيانات (Schema) للـ POST
 user_model = api.model('User', {
-    'first_name': fields.String(required=True),
-    'last_name': fields.String(required=True),
-    'email': fields.String(required=True),
-    'password': fields.String(required=True)
+    'first_name': fields.String(required=True, description="User's first name"),
+    'last_name': fields.String(required=True, description="User's last name"),
+    'email': fields.String(required=True, description="User's email"),
+    'password': fields.String(required=True, description="User's password")
 })
 
+# ---- Routes ----
 @api.route('/')
 class UserList(Resource):
 
     @api.expect(user_model)
     def post(self):
+        """إنشاء مستخدم جديد"""
         data = request.get_json()
         if not data:
             return {"error": "Invalid input"}, 400
-        user, status = facade.create_user(data)
-        return user, status
+
+        user_dict, status = facade.create_user(data)
+        return user_dict, status
 
     def get(self):
-        users = facade.get_all_users()  
-        return {"users": [user.to_dict() for user in users]}, 200
+        """جلب كل المستخدمين"""
+        users = facade.get_all_users()
+        # تحويل كل المستخدمين إلى dict
+        return [user.to_dict() for user in users], 200
