@@ -28,6 +28,19 @@ class HBnBFacade:
         "updated_at": user.updated_at.isoformat()
     }, 201
     
+def get_all_users(self):
+    users = self.users.get_all()
+    return [
+        {
+            "id": u.id,
+            "first_name": u.first_name,
+            "last_name": u.last_name,
+            "email": u.email,
+            "created_at": u.created_at.isoformat(),
+            "updated_at": u.updated_at.isoformat()
+        } for u in users
+    ]
+    
     # ---------------- PLACES ----------------
     def create_place(self, user_id: str, **data):
         place = Place(
