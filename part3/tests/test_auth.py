@@ -3,6 +3,7 @@ from app import create_app
 from app.extensions import db
 from app.models.user import User
 
+
 class TestAuth(unittest.TestCase):
 
     def setUp(self):
@@ -19,6 +20,7 @@ class TestAuth(unittest.TestCase):
                 email="test@test.com"
             )
             user.set_password("123456")
+
             db.session.add(user)
             db.session.commit()
 
@@ -27,16 +29,18 @@ class TestAuth(unittest.TestCase):
             db.drop_all()
 
     def test_login_success(self):
-        response = self.client.post("/api/v1/login", json={
+        response = self.client.post("/api/v1/auth/login", json={
             "email": "test@test.com",
             "password": "123456"
         })
 
+        data = response.get_json()
+
         self.assertEqual(response.status_code, 200)
-        self.assertIn("access_token", response.get_json())
+        self.assertIn("access_token", data)
 
     def test_login_fail(self):
-        response = self.client.post("/api/v1/login", json={
+        response = self.client.post("/api/v1/auth/login", json={
             "email": "test@test.com",
             "password": "wrong"
         })
