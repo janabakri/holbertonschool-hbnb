@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any
 from app.extensions import db
-from .base_model import BaseModel
+from app.models.base_model import BaseModel
 
 place_amenity = db.Table(    #Task 8, Amaal
     'place_amenity',
