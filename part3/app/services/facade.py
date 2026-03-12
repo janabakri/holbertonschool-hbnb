@@ -85,3 +85,7 @@ class HBnBFacade:
     def get_amenities_for_place(self, place_id: str):
         place = self.places.get_by_id(place_id)
         return place.amenities if place else []
+
+
+# ---------------- GLOBAL INSTANCE ----------------
+facade = HBnBFacade()
