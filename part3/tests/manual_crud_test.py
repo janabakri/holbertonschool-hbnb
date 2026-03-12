@@ -1,4 +1,4 @@
-# tests/test_crud_clean.py
+# tests/manual_crud_test.py
 from app import create_app
 from app.extensions import db, bcrypt
 from app.services.facade import HBnBFacade
