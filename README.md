@@ -394,9 +394,273 @@ The project follows a Three-Layer Architecture pattern:
 | PUT | `/amenities/{id}` | Update an amenity |
 | DELETE | `/amenities/{id}` | Delete an amenity |
 ---
+
+---
+
+# Part 3 – Database Schema & API Expansion
+
+## Overview
+
+Part 3 of the **HBnB Evolution** project focuses on transforming the system from a simple in-memory architecture into a **structured relational data model** with clearly defined relationships between entities.
+
+This stage introduces:
+
+* A relational database schema
+* Entity relationship visualization
+* Structured API interactions with persistent data
+* Clear documentation of data relationships
+
+The goal is to ensure that the system architecture remains **scalable, maintainable, and aligned with real-world backend design practices**.
+
+---
+
+# Database Schema Design
+
+The database is designed using a **relational model** where each entity is represented as a table and relationships are enforced through **foreign keys and association tables**.
+
+The main entities included in the schema are:
+
+* **User**
+* **Place**
+* **Review**
+* **Amenity**
+* **Place_Amenity** (association table)
+
+Each entity extends the base attributes defined in **BaseEntity**, ensuring consistency across the system.
+
+### BaseEntity Fields
+
+| Field      | Type     | Description           |
+| ---------- | -------- | --------------------- |
+| id         | UUID     | Unique identifier     |
+| created_at | datetime | Creation timestamp    |
+| updated_at | datetime | Last update timestamp |
+
+---
+
+# Entity Relationship Diagram (ERD)
+
+The following diagram represents the database schema and the relationships between all entities in the HBnB system.
+
+```mermaid
+erDiagram
+
+USER {
+    UUID id
+    string first_name
+    string last_name
+    string email
+    string password
+    boolean is_admin
+    datetime created_at
+    datetime updated_at
+}
+
+PLACE {
+    UUID id
+    string title
+    string description
+    float price
+    float latitude
+    float longitude
+    UUID owner_id
+    datetime created_at
+    datetime updated_at
+}
+
+REVIEW {
+    UUID id
+    string text
+    int rating
+    UUID user_id
+    UUID place_id
+    datetime created_at
+    datetime updated_at
+}
+
+AMENITY {
+    UUID id
+    string name
+    datetime created_at
+    datetime updated_at
+}
+
+PLACE_AMENITY {
+    UUID place_id
+    UUID amenity_id
+}
+
+USER ||--o{ PLACE : owns
+USER ||--o{ REVIEW : writes
+PLACE ||--o{ REVIEW : receives
+PLACE ||--o{ PLACE_AMENITY : has
+AMENITY ||--o{ PLACE_AMENITY : includes
+```
+
+---
+
+# Relationship Explanation
+
+### User → Place (One-to-Many)
+
+A **user can own multiple places**, but each place belongs to **one owner only**.
+
+Example:
+
+```
+User (Host)
+ ├── Place 1
+ ├── Place 2
+ └── Place 3
+```
+
+---
+
+### User → Review (One-to-Many)
+
+A user can write multiple reviews for different places.
+
+```
+User
+ ├── Review for Place A
+ ├── Review for Place B
+ └── Review for Place C
+```
+
+---
+
+### Place → Review (One-to-Many)
+
+Each place can receive multiple reviews from different users.
+
+```
+Place
+ ├── Review 1
+ ├── Review 2
+ └── Review 3
+```
+
+---
+
+### Place ↔ Amenity (Many-to-Many)
+
+A place can have multiple amenities, and each amenity can belong to multiple places.
+
+This relationship is implemented using the **Place_Amenity association table**.
+
+Example:
+
+```
+Place
+ ├── WiFi
+ ├── Pool
+ └── Parking
+```
+
+Another place may share the same amenities.
+
+---
+
+# Association Table: Place_Amenity
+
+The **Place_Amenity** table is used to manage the many-to-many relationship between places and amenities.
+
+| Field      | Description           |
+| ---------- | --------------------- |
+| place_id   | References a place    |
+| amenity_id | References an amenity |
+
+Example:
+
+| place_id | amenity_id |
+| -------- | ---------- |
+| 1        | WiFi       |
+| 1        | Pool       |
+| 2        | WiFi       |
+
+---
+
+# API Integration with Database
+
+In Part 3, the API endpoints interact with the database through the **Repository Pattern** and the **Facade Layer**.
+
+### Request Flow
+
+```
+Client Request
+     ↓
+API Endpoint
+     ↓
+HBnBFacade
+     ↓
+Repository Layer
+     ↓
+Database
+```
+
+This architecture ensures that:
+
+* The **API layer remains simple**
+* Business logic stays centralized
+* Database access remains modular and maintainable
+
+---
+
+# Benefits of the Schema Design
+
+This relational schema provides several advantages:
+
+### Data Integrity
+
+Foreign keys ensure that relationships remain valid.
+
+### Scalability
+
+New entities (such as bookings or payments) can be easily added.
+
+### Query Optimization
+
+Indexes and relational joins allow efficient queries.
+
+### Maintainability
+
+The separation between entities simplifies updates and debugging.
+
+---
+
+# Documentation
+
+Additional documentation for the API endpoints can be found in:
+
+```
+API_DOCUMENTATION.md
+```
+
+This document includes:
+
+* Endpoint descriptions
+* Request/response formats
+* Example API calls
+* Error handling documentation
+
+---
+
+# Conclusion
+
+Part 3 completes the transformation of HBnB into a **fully structured backend system with a relational database model**.
+
+With the introduction of:
+
+* a normalized schema
+* entity relationship diagrams
+* clear API integration
+
+the platform now provides a strong foundation for future development, including booking systems, payments, and large-scale deployment.
+
+---
+ 
 ## Contributors 
 
 - *Raghad Almalki* – https://github.com/Raghad717  
 - *Rama Alshahri* – https://github.com/csrama  
 - *Jana Bakri* – https://github.com/janabakri
-- 
