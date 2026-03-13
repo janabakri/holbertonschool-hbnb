@@ -160,7 +160,7 @@ For optimal query performance, indexes should be created on:
 
 Below is the complete ERD created with Mermaid.js:
 
-```mermaid
+mermaid
 erDiagram
     %% Tables
     USER {
@@ -211,4 +211,4 @@ erDiagram
     PLACE ||--o{ PLACE_AMENITY : "1 place can have many amenities"
     AMENITY ||--o{ PLACE_AMENITY : "1 amenity can belong to many places"
 
-    %% Note: Create indexes on all FK columns for better query performance'''
+    %% Note: Create indexes on all FK columns for better query performance
