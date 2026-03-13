@@ -3,7 +3,9 @@
 from flask import Blueprint
 from flask_restx import Api, Resource, fields
 from flask_jwt_extended import create_access_token
-from app.services.facade import facade
+from app.services.facade import HBnBFacade
+
+facade = HBnBFacade()
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 api = Api(auth_bp)
