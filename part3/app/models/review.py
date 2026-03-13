@@ -19,11 +19,9 @@ class Review(BaseModel):
     
     __tablename__ = 'reviews'
 
-    # ==================== TASK 7: SQLAlchemy Columns ====================
     text = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 
-    # ==================== TASK 8: Foreign Keys - Amaal ====================
     user_id  = db.Column(db.String(36), db.ForeignKey('users.id'),  nullable=False)
     place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
 
@@ -57,7 +55,7 @@ class Review(BaseModel):
 
     # ============= Serialization =============
 
-    def to_dict(self) -> dict:    #ُTask 8, Amaal
+    def to_dict(self) -> dict:   
         base_dict = super().to_dict()
         base_dict.update({
             "text":     self.text,
