@@ -16,6 +16,8 @@ user_model = api.model("User", {
 user_update_model = api.model("UserUpdate", {
     "first_name": fields.String(description="First name of the user"),
     "last_name":  fields.String(description="Last name of the user"),
+    "email":      fields.String(description="Email of the user"),
+    "password":   fields.String(description="Password of the user"),
 })
 
 def user_to_dict(user):
@@ -35,15 +37,16 @@ class UserList(Resource):
     @api.response(200, "List of users retrieved successfully")
     def get(self):
         """Retrieve a list of users - PUBLIC"""
-    return [user_to_dict(u) for u in facade.get_all_users()], 200
+        return [user_to_dict(u) for u in facade.get_all_users()], 200
+
     @api.expect(user_model, validate=True)
     @api.response(201, "User successfully created")
     @api.response(400, "Invalid input data")
     @api.response(403, "Admin access required")
     @jwt_required()
     def post(self):
-        """Register a new user - ADMIN ONLY (Task 4)"""
-        if not get_jwt().get('is_admin'):
+        """Register a new user - ADMIN ONLY"""
+        if not get_jwt().get('is_admin', False):
             return {'error': 'Admin access required'}, 403
         try:
             new_user = facade.create_user(api.payload)
@@ -71,11 +74,7 @@ class UserResource(Resource):
     @api.response(404, "User not found")
     @jwt_required()
     def put(self, user_id):
-        """
-        Update user - AUTHENTICATED (Task 3 & 4)
-        - Regular user: can only update info but without email/password
-        - Admin: can change email and password
-        """
+        """Update user - AUTHENTICATED"""
         current_user_id = get_jwt_identity()
         is_admin = get_jwt().get('is_admin', False)
 
