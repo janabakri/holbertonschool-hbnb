@@ -1,7 +1,7 @@
 # HBnB Database Entity-Relationship Diagram (ERD) Documentation
 
 ## Project: Holberton School HBnB
-## Part 3: Database Schema Design
+### Part 3: Database Schema Design
 
 ---
 
@@ -15,77 +15,96 @@ The diagram was created using **Mermaid.js**, a markdown-like syntax tool that a
 
 ## 2. Entity Descriptions
 
-### 2.1 USER
-The USER entity stores information about all platform users, including both guests and hosts.
+### 2.1 USERS
+The USERS table stores information about all platform users, including both guests and hosts.
 
 | Attribute | Data Type | Constraints | Description |
 |-----------|-----------|-------------|-------------|
 | id | string | PRIMARY KEY | Unique identifier for each user |
 | first_name | string | NOT NULL | User's first name |
 | last_name | string | NOT NULL | User's last name |
-| email | string | UNIQUE, NOT NULL | User's email address for login |
+| email | string | UNIQUE, NOT NULL | Unique email address used for login |
 | password | string | NOT NULL | Hashed password for authentication |
-| is_admin | boolean | DEFAULT false | Flag indicating if user has admin privileges |
+| is_admin | boolean | DEFAULT false | Admin privileges flag (true = administrator) |
+| created_at | datetime | NOT NULL | Record creation timestamp |
+| updated_at | datetime | NOT NULL | Record last update timestamp |
 
 **Relationships:**
-- One user can own many places (one-to-many with PLACE)
-- One user can write many reviews (one-to-many with REVIEW)
+- One user can own many places (one-to-many with PLACES)
+- One user can write many reviews (one-to-many with REVIEWS)
 
-### 2.2 PLACE
-The PLACE entity represents properties listed on the platform.
+---
+
+### 2.2 PLACES
+The PLACES table represents properties listed on the platform by users.
 
 | Attribute | Data Type | Constraints | Description |
 |-----------|-----------|-------------|-------------|
 | id | string | PRIMARY KEY | Unique identifier for each place |
-| name | string | NOT NULL | Name/title of the place |
-| description | string | - | Detailed description of the property |
-| city_id | string | FOREIGN KEY | References the City table (external) |
-| user_id | string | FOREIGN KEY | References the owner (USER.id) |
+| title | string | NOT NULL | Place title/name |
+| description | text | - | Detailed description of the property |
+| price | float | NOT NULL | Price per night in local currency |
+| latitude | float | - | Geographic latitude coordinate |
+| longitude | float | - | Geographic longitude coordinate |
+| owner_id | string | FOREIGN KEY | References USERS.id (the property owner) |
+| created_at | datetime | NOT NULL | Record creation timestamp |
+| updated_at | datetime | NOT NULL | Record last update timestamp |
 
 **Relationships:**
-- Many places belong to one user (many-to-one with USER)
-- One place can receive many reviews (one-to-many with REVIEW)
-- One place can have many amenities (many-to-many with AMENITY via PLACE_AMENITY)
+- Many places belong to one user (many-to-one with USERS)
+- One place can receive many reviews (one-to-many with REVIEWS)
+- One place can have many amenities (many-to-many with AMENITIES via PLACE_AMENITY)
 
-### 2.3 REVIEW
-The REVIEW entity stores user feedback about places they've visited.
+---
+
+### 2.3 REVIEWS
+The REVIEWS table stores user feedback and ratings about places they've visited.
 
 | Attribute | Data Type | Constraints | Description |
 |-----------|-----------|-------------|-------------|
 | id | string | PRIMARY KEY | Unique identifier for each review |
-| user_id | string | FOREIGN KEY | References the author (USER.id) |
-| place_id | string | FOREIGN KEY | References the place being reviewed (PLACE.id) |
-| text | string | NOT NULL | The review content |
-| created_at | datetime | NOT NULL | Timestamp of when review was created |
+| user_id | string | FOREIGN KEY | References USERS.id (the review author) |
+| place_id | string | FOREIGN KEY | References PLACES.id (the place being reviewed) |
+| text | text | NOT NULL | Review content/text |
+| created_at | datetime | NOT NULL | Review creation timestamp |
+| updated_at | datetime | NOT NULL | Record last update timestamp |
 
 **Relationships:**
-- Many reviews belong to one user (many-to-one with USER)
-- Many reviews belong to one place (many-to-one with PLACE)
+- Many reviews belong to one user (many-to-one with USERS)
+- Many reviews belong to one place (many-to-one with PLACES)
 
-### 2.4 AMENITY
-The AMENITY entity stores available amenities that can be associated with places.
+---
+
+### 2.4 AMENITIES
+The AMENITIES table stores available amenities that can be associated with places.
 
 | Attribute | Data Type | Constraints | Description |
 |-----------|-----------|-------------|-------------|
 | id | string | PRIMARY KEY | Unique identifier for each amenity |
-| name | string | UNIQUE, NOT NULL | Name of the amenity (e.g., "WiFi", "Pool") |
+| name | string | UNIQUE, NOT NULL | Unique amenity name (e.g., "WiFi", "Pool", "Air Conditioning") |
+| created_at | datetime | NOT NULL | Record creation timestamp |
+| updated_at | datetime | NOT NULL | Record last update timestamp |
 
 **Relationships:**
-- One amenity can belong to many places (many-to-many with PLACE via PLACE_AMENITY)
+- One amenity can belong to many places (many-to-many with PLACES via PLACE_AMENITY)
+
+---
 
 ### 2.5 PLACE_AMENITY (Junction Table)
-This associative entity handles the many-to-many relationship between PLACE and AMENITY.
+The PLACE_AMENITY table handles the many-to-many relationship between PLACES and AMENITIES.
 
 | Attribute | Data Type | Constraints | Description |
 |-----------|-----------|-------------|-------------|
-| place_id | string | FOREIGN KEY, COMPOSITE PK | References PLACE.id |
-| amenity_id | string | FOREIGN KEY, COMPOSITE PK | References AMENITY.id |
+| place_id | string | PRIMARY KEY, FOREIGN KEY | References PLACES.id (part of composite key) |
+| amenity_id | string | PRIMARY KEY, FOREIGN KEY | References AMENITIES.id (part of composite key) |
+| created_at | datetime | NOT NULL | Junction record creation timestamp |
 
 **Composite Primary Key:** (place_id, amenity_id) - Ensures each combination is unique, preventing duplicate amenity assignments to the same place.
 
 **Relationships:**
-- Many PLACE_AMENITY records belong to one place (many-to-one with PLACE)
-- Many PLACE_AMENITY records belong to one amenity (many-to-one with AMENITY)
+- Many PLACE_AMENITY records belong to one place (many-to-one with PLACES)
+- Many PLACE_AMENITY records belong to one amenity (many-to-one with AMENITIES)
+
 
 ---
 
@@ -152,13 +171,26 @@ For optimal query performance, indexes should be created on:
 ### 5.2 Data Types Choice
 - **String IDs**: Using strings for primary keys allows for UUID generation, which is preferable in distributed systems
 - **Float for price**: Accommodates decimal values for accurate pricing
+- **int for rating**: to make rating frome 1 to 5
 - **Datetime for timestamps**: Enables time-based queries and sorting
 
 ---
 
-## 6. ERD Diagram
+### 6. Conclusion
+The ERD provides a complete and accurate representation of the HBnB database schema. It captures all required entities and their relationships, ensuring:
 
-Below is the complete ERD created with Mermaid.js:
+- Data integrity through proper primary and foreign key constraints
+
+- Flexibility with a many-to-many relationship between places and amenities
+
+- Scalability with string-based UUID primary keys
+
+- Clarity with comprehensive attribute definitions and relationship cardinalities
+
+The diagram serves as an essential reference for developers implementing the database layer and for future maintenance of the HBnB platform.
 
 ---
-
+### Authors 
+- Raghad Almalki
+- Jana Bakri
+- Rama Alsheheri
