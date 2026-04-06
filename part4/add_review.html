@@ -1,15 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review - HBnB</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
 <body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <img src="images/logo.png" alt="HBnB Logo">
+                <h1>HBnB</h1>
+            </div>
+        </div>
+    </header>
 
-<h2>Add Review</h2>
+    <div class="container">
+        <div class="add-review">
+            <h2>Add Your Review</h2>
+            <form id="review-form">
+                <div class="form-group">
+                    <label for="review-text">Your Review</label>
+                    <textarea id="review-text" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="rating">Rating</label>
+                    <select id="rating" required>
+                        <option value="5">⭐ 5 - Excellent</option>
+                        <option value="4">⭐ 4 - Good</option>
+                        <option value="3">⭐ 3 - Average</option>
+                        <option value="2">⭐ 2 - Poor</option>
+                        <option value="1">⭐ 1 - Terrible</option>
+                    </select>
+                </div>
+                <input type="hidden" id="place-id">
+                <button type="submit" class="submit-button">Submit Review</button>
+            </form>
+        </div>
+    </div>
 
-<form id="review-form">
-    <textarea id="review-text"></textarea>
-    <button type="submit">Submit</button>
-</form>
+    <footer>
+        <p>&copy; 2025 HBnB. All rights reserved.</p>
+    </footer>
 
-<script src="config.js"></script>
-<script src="scripts.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
