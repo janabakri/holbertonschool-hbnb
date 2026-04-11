@@ -1,3 +1,4 @@
+from .base_model import BaseModel
 class User(BaseModel):
     """
     User entity with SQLAlchemy mapping and password hashing.
