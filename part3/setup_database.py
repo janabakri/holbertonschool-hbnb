@@ -33,11 +33,10 @@ def main():
             db.create_all()
             print("✅ Tables ready!")
 
-            # Step 2: Create Users
-            print("\n📝 Creating users...")
+           # Step 2: Create Users
+print("\n📝 Creating users...")
 
-            # Admin user (is_admin=True)
-          # Admin user
+# Admin user
 admin = User(
     id=str(uuid.uuid4()),
     first_name='Raghad',
@@ -67,9 +66,10 @@ rama = User(
 )
 rama.hash_password('rama123')
 db.session.add(rama)
-            db.session.commit()
-            print(f"✅ Created {User.query.count()} users")
 
+db.session.commit()
+print(f"✅ Created {User.query.count()} users")
+            
             # Step 3: Create Amenities
             print("\n📝 Creating amenities...")
 
