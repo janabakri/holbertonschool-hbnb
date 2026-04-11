@@ -23,37 +23,54 @@ function deleteCookie(name) {
 function initLoginForm() {
     const form = document.getElementById('login-form');
     if (!form) return;
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const errorDiv = document.getElementById('login-error-message');
-        
+
+        // FIX: كان ID غلط (login-error-message)
+        const errorDiv = document.getElementById('error-message');
+
         try {
             const res = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
-            
+
             const data = await res.json();
-            
+
+            // Debug (اختياري مفيد لك)
+            console.log("LOGIN RESPONSE:", data);
+
             if (res.ok) {
-                // Save token
+                // Save token (أفضل من cookies لكن خلّيته مثل مشروعك)
                 setCookie('token', data.access_token);
+
                 console.log('Login successful, token saved');
-                // Redirect to index page
+
+                // Redirect
                 window.location.href = 'index.html';
             } else {
-                if (errorDiv) errorDiv.textContent = data.error || 'Login failed';
-                else alert('Login failed: ' + (data.error || 'Unknown error'));
+                if (errorDiv) {
+                    errorDiv.style.display = "block";
+                    errorDiv.textContent = data.error || 'Login failed';
+                } else {
+                    alert('Login failed: ' + (data.error || 'Unknown error'));
+                }
             }
         } catch (err) {
             const msg = 'Network error. Make sure backend is running on port 5000';
-            if (errorDiv) errorDiv.textContent = msg;
-            else alert(msg);
+
+            if (errorDiv) {
+                errorDiv.style.display = "block";
+                errorDiv.textContent = msg;
+            } else {
+                alert(msg);
+            }
+
             console.error(err);
         }
     });
@@ -63,48 +80,54 @@ function initLoginForm() {
 async function fetchPlaces() {
     const container = document.getElementById('places-list');
     if (!container) return;
-    
+
     container.innerHTML = '<p>Loading places...</p>';
-    
+
     try {
         const res = await fetch(`${API_URL}/places`);
         if (!res.ok) throw new Error('Failed to fetch places');
-        
+
         const places = await res.json();
-        
+
         if (!places || places.length === 0) {
             container.innerHTML = '<p>No places available.</p>';
             return;
         }
-        
+
         container.innerHTML = '';
+
         places.forEach(place => {
             const card = document.createElement('div');
             card.className = 'place-card';
             card.setAttribute('data-price', place.price);
+
             card.innerHTML = `
                 <h3>${escapeHtml(place.title)}</h3>
                 <p class="price">$${place.price} / night</p>
                 <button class="details-button" data-id="${place.id}">View Details</button>
             `;
-            const btn = card.querySelector('.details-button');
-            btn.onclick = () => {
+
+            card.querySelector('.details-button').onclick = () => {
                 window.location.href = `place.html?id=${place.id}`;
             };
+
             container.appendChild(card);
         });
-        
+
         // Price filter
         const filter = document.getElementById('price-filter');
         if (filter) {
             filter.onchange = () => {
                 const maxPrice = filter.value;
+
                 document.querySelectorAll('.place-card').forEach(card => {
                     const price = parseFloat(card.getAttribute('data-price'));
-                    card.style.display = (maxPrice === 'all' || price <= maxPrice) ? 'flex' : 'none';
+                    card.style.display =
+                        (maxPrice === 'all' || price <= maxPrice) ? 'flex' : 'none';
                 });
             };
         }
+
     } catch (err) {
         console.error(err);
         container.innerHTML = '<p>Error loading places. Make sure backend is running.</p>';
@@ -115,30 +138,37 @@ async function fetchPlaces() {
 async function loadPlaceDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const placeId = urlParams.get('id');
-    
+
     if (!placeId) {
         document.getElementById('place-details').innerHTML = '<p>No place ID specified.</p>';
         return;
     }
-    
+
     try {
         const res = await fetch(`${API_URL}/places/${placeId}`);
         if (!res.ok) throw new Error('Place not found');
-        
+
         const place = await res.json();
-        
+
         document.getElementById('place-details').innerHTML = `
             <h2>${escapeHtml(place.title)}</h2>
             <p>${escapeHtml(place.description || 'No description')}</p>
             <p class="price"><strong>Price:</strong> $${place.price} / night</p>
             <div class="owner-info"><strong>Host:</strong> ${escapeHtml(place.owner?.first_name || 'Unknown')}</div>
-            <div class="amenities"><strong>Amenities:</strong><ul>${place.amenities?.map(a => `<li>${escapeHtml(a.name)}</li>`).join('') || '<li>None</li>'}</ul></div>
+            <div class="amenities">
+                <strong>Amenities:</strong>
+                <ul>
+                    ${place.amenities?.map(a => `<li>${escapeHtml(a.name)}</li>`).join('') || '<li>None</li>'}
+                </ul>
+            </div>
         `;
-        
-        // Load reviews
+
+        // Reviews
         const reviewsRes = await fetch(`${API_URL}/reviews/places/${placeId}/reviews`);
         const reviews = await reviewsRes.json();
+
         const reviewsContainer = document.getElementById('reviews-list');
+
         if (reviewsContainer) {
             if (!reviews || reviews.length === 0) {
                 reviewsContainer.innerHTML = '<p>No reviews yet.</p>';
@@ -151,39 +181,42 @@ async function loadPlaceDetails() {
                 `).join('');
             }
         }
-        
-        // Show add review section if logged in
+
+        // show review form if logged in
         const token = getCookie('token');
         const addSection = document.getElementById('add-review-section');
+
         if (addSection && token) {
             addSection.style.display = 'block';
             document.getElementById('place-id').value = placeId;
         }
+
     } catch (err) {
         console.error(err);
         document.getElementById('place-details').innerHTML = '<p>Error loading place details.</p>';
     }
 }
 
-// ===== ADD REVIEW =====
+// ===== REVIEW FORM =====
 function initReviewForm() {
     const form = document.getElementById('review-form');
     if (!form) return;
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const token = getCookie('token');
+
         if (!token) {
             alert('Please login first');
             window.location.href = 'login.html';
             return;
         }
-        
+
         const placeId = document.getElementById('place-id').value;
         const text = document.getElementById('review-text').value;
         const rating = document.getElementById('rating').value;
-        
+
         try {
             const res = await fetch(`${API_URL}/reviews/`, {
                 method: 'POST',
@@ -191,9 +224,13 @@ function initReviewForm() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ text, rating: parseInt(rating), place_id: placeId })
+                body: JSON.stringify({
+                    text,
+                    rating: parseInt(rating),
+                    place_id: placeId
+                })
             });
-            
+
             if (res.ok) {
                 alert('Review added successfully!');
                 document.getElementById('review-text').value = '';
@@ -202,36 +239,40 @@ function initReviewForm() {
                 const error = await res.json();
                 alert(error.error || 'Failed to add review');
             }
+
         } catch (err) {
             alert('Network error');
         }
     });
 }
 
-// ===== CHECK AUTH FOR INDEX PAGE =====
+// ===== AUTH UI =====
 function checkAuthForIndex() {
     const token = getCookie('token');
+
     const loginLink = document.getElementById('login-link');
     const adminLink = document.getElementById('admin-link');
-    
+
     if (token) {
         if (loginLink) loginLink.style.display = 'none';
+
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
+
             if (payload.is_admin && adminLink) {
                 adminLink.style.display = 'inline-block';
             }
-        } catch(e) {}
+        } catch (e) {}
     } else {
         if (loginLink) loginLink.style.display = 'inline-block';
         if (adminLink) adminLink.style.display = 'none';
     }
 }
 
-// ===== HELPER =====
+// ===== HELPERS =====
 function escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
+    return str.replace(/[&<>]/g, function (m) {
         if (m === '&') return '&amp;';
         if (m === '<') return '&lt;';
         if (m === '>') return '&gt;';
@@ -239,20 +280,18 @@ function escapeHtml(str) {
     });
 }
 
-// ===== INITIALIZATION =====
+// ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-    // Login page
+
     if (document.getElementById('login-form')) {
         initLoginForm();
     }
-    
-    // Index page
+
     if (document.getElementById('places-list')) {
         checkAuthForIndex();
         fetchPlaces();
     }
-    
-    // Place details page
+
     if (document.getElementById('place-details')) {
         loadPlaceDetails();
         initReviewForm();
