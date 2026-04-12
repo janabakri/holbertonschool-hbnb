@@ -1,275 +1,399 @@
-// ===== Configuration =====
-const API_URL = 'http://localhost:5000/api/v1';
+/*scripts.js */
 
-// ===== Cookie Helpers =====
+const API_URL = 'http://127.0.0.1:5000/api/v1';
+
+/*UTILITY: Cookie helpers */
 function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    const cookies = document.cookie.split(';');
+
+    for (let cookie of cookies) {
+        const [key, value] = cookie.trim().split('=');
+        if (key === name) {
+            return value;
+        }
+    }
+
     return null;
 }
 
 function setCookie(name, value, days = 7) {
     const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
 }
 
-function deleteCookie(name) {
-    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+function getPlaceIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id');
 }
 
-// ===== 🔥 Authentication Check (NEW) =====
-function checkAuthentication() {
+/* LOGIN */
+async function loginUser(email, password) {
+    const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+    });
+
+    return response;
+}
+
+/* INDEX PAGE HELPERS */
+let allPlaces = [];
+
+function checkAuthIndex() {
     const token = getCookie('token');
+    const loginLink = document.getElementById('login-link');
+
+    if (loginLink) {
+        loginLink.style.display = token ? 'none' : 'block';
+    }
+
+    fetchPlaces(token);
+}
+
+async function fetchPlaces(token) {
+    try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_URL}/places/`, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch places');
+        }
+
+        const places = await response.json();
+
+        if (Array.isArray(places)) {
+            allPlaces = places;
+        } else if (places && Array.isArray(places.places)) {
+            allPlaces = places.places;
+        } else {
+            allPlaces = [];
+        }
+
+        displayPlaces(allPlaces);
+    } catch (error) {
+        const list = document.getElementById('places-list');
+        if (list) {
+            list.innerHTML = '<p style="color: var(--text-light);">Could not load places. Please try again later.</p>';
+        }
+    }
+}
+
+function displayPlaces(places) {
+    const list = document.getElementById('places-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+
+    if (!places || places.length === 0) {
+        list.innerHTML = '<p style="color: var(--text-light);">No places found.</p>';
+        return;
+    }
+
+    places.forEach(place => {
+        const placeId = place.id || '';
+        const placeName = place.name || place.title || 'Unnamed place';
+        const placePrice = place.price || place.price_by_night || 0;
+
+        const card = document.createElement('div');
+        card.className = 'place-card';
+        card.dataset.price = placePrice;
+
+        card.innerHTML = `
+            <h3>${placeName}</h3>
+            <p class="price">$${placePrice} / night</p>
+            <a href="place.html?id=${placeId}" class="details-button">View Details</a>
+        `;
+
+        list.appendChild(card);
+    });
+}
+
+function setupPriceFilter() {
+    const filter = document.getElementById('price-filter');
+    if (!filter) return;
+
+    filter.addEventListener('change', (event) => {
+        const selected = event.target.value;
+        const cards = document.querySelectorAll('.place-card');
+
+        cards.forEach(card => {
+            const price = parseFloat(card.dataset.price);
+
+            if (selected === 'all' || price <= parseFloat(selected)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+}
+
+/*PLACE DETAILS HELPERS */
+async function fetchPlaceDetails(token, placeId) {
+    try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_URL}/places/${placeId}`, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error('Place not found');
+        }
+
+        const place = await response.json();
+        displayPlaceDetails(place);
+        fetchReviews(token, placeId);
+    } catch (error) {
+        const section = document.getElementById('place-details');
+        if (section) {
+            section.innerHTML = '<p>Could not load place details.</p>';
+        }
+    }
+}
+
+function displayPlaceDetails(place) {
+    const section = document.getElementById('place-details');
+    if (!section) return;
+
+    const placeName = place.name || place.title || 'Unnamed place';
+    const placePrice = place.price || place.price_by_night || 0;
+    const hostName = place.host || place.owner_name || place.owner_id || 'N/A';
+    const description = place.description || 'No description provided.';
+    const location = place.location || (
+        place.latitude !== undefined && place.longitude !== undefined
+            ? `${place.latitude}, ${place.longitude}`
+            : 'N/A'
+    );
+
+    const amenitiesHTML = place.amenities && place.amenities.length > 0
+        ? place.amenities.map(a => `<span class="amenity-tag">${a.name || a}</span>`).join('')
+        : '<span class="amenity-tag">None listed</span>';
+
+    section.innerHTML = `
+        <div class="place-details">
+            <h1>${placeName}</h1>
+            <div class="place-info">
+                <p><strong>Host:</strong> ${hostName}</p>
+                <p><strong>Price:</strong> $${placePrice} / night</p>
+                <p><strong>Location:</strong> ${location}</p>
+                <p><strong>Description:</strong> ${description}</p>
+            </div>
+            <div>
+                <strong>Amenities:</strong>
+                <div class="amenities-list">${amenitiesHTML}</div>
+            </div>
+        </div>
+    `;
+}
+
+async function fetchReviews(token, placeId) {
+    try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_URL}/places/${placeId}/reviews`, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) return;
+
+        const reviews = await response.json();
+        displayReviews(reviews);
+    } catch (error) {
+        console.error('Could not load reviews');
+    }
+}
+
+function displayReviews(reviews) {
+    const section = document.getElementById('reviews');
+    if (!section) return;
+
+    section.innerHTML = '<h2>Reviews</h2>';
+
+    if (!reviews || reviews.length === 0) {
+        section.innerHTML += '<p style="color: var(--text-light);">No reviews yet. Be the first!</p>';
+        return;
+    }
+
+    reviews.forEach(review => {
+        const stars = '⭐'.repeat(review.rating || 0);
+        const reviewer = review.user_name || review.user || 'Anonymous';
+        const reviewText = review.text || review.comment || 'No review text provided.';
+
+        const card = document.createElement('div');
+        card.className = 'review-card';
+        card.innerHTML = `
+            <p class="reviewer">${reviewer}</p>
+            <p class="rating">${stars}</p>
+            <p>${reviewText}</p>
+        `;
+        section.appendChild(card);
+    });
+}
+
+/*ADD REVIEW HELPERS */
+function checkAuthAddReview() {
+    const token = getCookie('token');
+
     if (!token) {
         window.location.href = 'index.html';
+        return null;
     }
+
     return token;
 }
 
-// ===== LOGIN =====
-function initLoginForm() {
-    const form = document.getElementById('login-form');
-    if (!form) return;
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const errorDiv = document.getElementById('error-message'); // FIXED ID
-
-        try {
-            const res = await fetch(`${API_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                setCookie('token', data.access_token);
-                window.location.href = 'index.html';
-            } else {
-                if (errorDiv) {
-                    errorDiv.style.display = 'block';
-                    errorDiv.textContent = data.error || 'Login failed';
-                } else {
-                    alert('Login failed');
-                }
-            }
-        } catch (err) {
-            alert('Network error. Make sure backend is running');
-            console.error(err);
-        }
-    });
-}
-
-// ===== PLACES =====
-async function fetchPlaces() {
-    const container = document.getElementById('places-list');
-    if (!container) return;
-
-    container.innerHTML = '<p>Loading places...</p>';
-
+async function submitReview(token, placeId, text, rating) {
     try {
-        const res = await fetch(`${API_URL}/places`);
-        if (!res.ok) throw new Error('Failed to fetch places');
-
-        const places = await res.json();
-
-        if (!places || places.length === 0) {
-            container.innerHTML = '<p>No places available.</p>';
-            return;
-        }
-
-        container.innerHTML = '';
-
-        places.forEach(place => {
-            const card = document.createElement('div');
-            card.className = 'place-card';
-            card.setAttribute('data-price', place.price);
-
-            card.innerHTML = `
-                <h3>${escapeHtml(place.title)}</h3>
-                <p class="price">$${place.price} / night</p>
-                <button class="details-button" data-id="${place.id}">View Details</button>
-            `;
-
-            card.querySelector('.details-button').onclick = () => {
-                window.location.href = `place.html?id=${place.id}`;
-            };
-
-            container.appendChild(card);
+        const response = await fetch(`${API_URL}/reviews/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                text: text,
+                rating: rating,
+                place_id: placeId
+            })
         });
 
-        // Filter
-        const filter = document.getElementById('price-filter');
-        if (filter) {
-            filter.onchange = () => {
-                const maxPrice = filter.value;
-                document.querySelectorAll('.place-card').forEach(card => {
-                    const price = parseFloat(card.getAttribute('data-price'));
-                    card.style.display = (maxPrice === 'all' || price <= maxPrice) ? 'flex' : 'none';
-                });
-            };
-        }
-
-    } catch (err) {
-        container.innerHTML = '<p>Error loading places.</p>';
+        await handleReviewResponse(response);
+    } catch (error) {
+        alert('Connection error. Please try again.');
     }
 }
 
-// ===== PLACE DETAILS =====
-async function loadPlaceDetails() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const placeId = urlParams.get('id');
+async function handleReviewResponse(response) {
+    if (response.ok) {
+        alert('Review submitted successfully!');
 
-    if (!placeId) return;
-
-    try {
-        const token = getCookie('token');
-
-        const res = await fetch(`${API_URL}/places/${placeId}`, {
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-        });
-
-        if (!res.ok) throw new Error('Place not found');
-
-        const place = await res.json();
-
-        document.getElementById('place-details').innerHTML = `
-            <h2>${escapeHtml(place.title)}</h2>
-            <p>${escapeHtml(place.description || 'No description')}</p>
-            <p class="price"><strong>Price:</strong> $${place.price} / night</p>
-            <div><strong>Host:</strong> ${escapeHtml(place.owner?.first_name || 'Unknown')}</div>
-            <div>
-                <strong>Amenities:</strong>
-                <ul>
-                    ${place.amenities?.map(a => `<li>${escapeHtml(a.name)}</li>`).join('') || '<li>None</li>'}
-                </ul>
-            </div>
-        `;
-
-        // ===== REVIEWS =====
-        const reviewsRes = await fetch(`${API_URL}/reviews/places/${placeId}/reviews`);
-        const reviews = await reviewsRes.json();
-
-        const reviewsContainer = document.getElementById('reviews-list');
-        if (reviewsContainer) {
-            reviewsContainer.innerHTML = reviews.length
-                ? reviews.map(r => `
-                    <div class="review-card">
-                        <p>"${escapeHtml(r.text)}"</p>
-                        <p>⭐ ${r.rating}/5 - ${escapeHtml(r.user?.first_name || 'Anonymous')}</p>
-                    </div>
-                `).join('')
-                : '<p>No reviews yet.</p>';
+        const form = document.getElementById('review-form');
+        if (form) {
+            form.reset();
         }
 
-    } catch (err) {
-        document.getElementById('place-details').innerHTML = '<p>Error loading place.</p>';
-    }
-}
-
-// ===== ADD REVIEW =====
-function initReviewForm() {
-    const form = document.getElementById('review-form');
-    if (!form) return;
-
-    const token = checkAuthentication();
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const placeId = document.getElementById('place-id').value;
-        const text = document.getElementById('review-text').value;
-        const rating = document.getElementById('rating').value;
-
-        try {
-            const res = await fetch(`${API_URL}/reviews/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    text,
-                    rating: parseInt(rating),
-                    place_id: placeId
-                })
-            });
-
-            if (res.ok) {
-                alert('Review added successfully!');
-                form.reset();
-                loadPlaceDetails();
-            } else {
-                const err = await res.json();
-                alert(err.error || 'Failed to add review');
-            }
-
-        } catch (err) {
-            alert('Network error');
+        const placeId = getPlaceIdFromURL();
+        if (placeId && window.location.pathname.includes('add_review')) {
+            window.location.href = `place.html?id=${placeId}`;
         }
-    });
-}
-
-// ===== AUTH UI =====
-function checkAuthForIndex() {
-    const token = getCookie('token');
-    const loginLink = document.getElementById('login-link');
-    const adminLink = document.getElementById('admin-link');
-
-    if (token) {
-        if (loginLink) loginLink.style.display = 'none';
-
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            if (payload.is_admin && adminLink) {
-                adminLink.style.display = 'inline-block';
-            }
-        } catch(e) {}
     } else {
-        if (loginLink) loginLink.style.display = 'inline-block';
-        if (adminLink) adminLink.style.display = 'none';
+        const data = await response.json().catch(() => ({}));
+        alert('Failed to submit review: ' + (data.error || response.statusText));
     }
 }
 
-// ===== HELPER =====
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, m =>
-        m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'
-    );
-}
-
-// ===== INITIALIZATION =====
+/*PAGE INITIALIZATION */
 document.addEventListener('DOMContentLoaded', () => {
+    /* -- LOGIN PAGE -- */
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-    // LOGIN
-    if (document.getElementById('login-form')) {
-        initLoginForm();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-message');
+
+            try {
+                const response = await loginUser(email, password);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setCookie('token', data.access_token);
+                    window.location.href = 'index.html';
+                } else {
+                    errorMsg.style.display = 'block';
+                    errorMsg.textContent = 'Invalid email or password. Please try again.';
+                }
+            } catch (error) {
+                errorMsg.style.display = 'block';
+                errorMsg.textContent = 'Connection error. Please try again.';
+            }
+        });
     }
 
-    // INDEX
-    if (document.getElementById('places-list')) {
-        checkAuthForIndex();
-        fetchPlaces();
+    /* -- INDEX PAGE -- */
+    const placesList = document.getElementById('places-list');
+    if (placesList) {
+        checkAuthIndex();
+        setupPriceFilter();
     }
 
-    // PLACE DETAILS
-    if (document.getElementById('place-details')) {
+    /* -- PLACE DETAILS PAGE -- */
+    const placeDetails = document.getElementById('place-details');
+    if (placeDetails) {
+        const placeId = getPlaceIdFromURL();
         const token = getCookie('token');
 
-        const addSection = document.getElementById('add-review-section');
-        if (addSection) {
-            addSection.style.display = token ? 'block' : 'none';
+        const loginLink = document.getElementById('login-link');
+        if (loginLink) {
+            loginLink.style.display = token ? 'none' : 'block';
         }
 
-        loadPlaceDetails();
-        initReviewForm();
+        const addReviewSection = document.getElementById('add-review');
+        if (addReviewSection) {
+            addReviewSection.style.display = token ? 'block' : 'none';
+        }
+
+        if (placeId) {
+            fetchPlaceDetails(token, placeId);
+        }
+
+        const reviewForm = document.getElementById('review-form');
+        if (reviewForm && placeId) {
+            reviewForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const text = document.getElementById('review-text').value.trim();
+                const rating = parseInt(document.getElementById('rating').value, 10);
+
+                await submitReview(token, placeId, text, rating);
+            });
+        }
+    }
+
+    /* -- ADD REVIEW PAGE -- */
+    const addReviewPageForm = document.getElementById('review-form');
+    if (addReviewPageForm && !document.getElementById('place-details')) {
+        const token = checkAuthAddReview();
+        const placeId = getPlaceIdFromURL();
+
+        addReviewPageForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const text = document.getElementById('review').value.trim();
+            const rating = parseInt(document.getElementById('rating').value, 10);
+
+            await submitReview(token, placeId, text, rating);
+        });
     }
 });
