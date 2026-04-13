@@ -233,10 +233,10 @@ async function fetchReviews(token, placeId) {
 }
 
 function displayReviews(reviews) {
-    const section = document.getElementById('reviews');
+    const section = document.getElementById('reviews-list');
     if (!section) return;
 
-    section.innerHTML = '<h2>Reviews</h2>';
+    section.innerHTML = '';
 
     if (!reviews || reviews.length === 0) {
         section.innerHTML += '<p style="color: var(--text-light);">No reviews yet. Be the first!</p>';
@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginLink.style.display = token ? 'none' : 'block';
         }
 
-        const addReviewSection = document.getElementById('add-review');
+        const addReviewSection = document.getElementById('add-review-section');
         if (addReviewSection) {
             addReviewSection.style.display = token ? 'block' : 'none';
         }
