@@ -216,3 +216,40 @@ input:focus, textarea:focus, select:focus {
     font-weight: bold;
     margin-bottom: 15px;
 }
+
+/* Review Cards */
+#reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.review-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.review-card .reviewer {
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.review-card .rating {
+    margin-bottom: 15px;
+}
+
+.review-card p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
