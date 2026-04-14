@@ -1,5 +1,6 @@
 ## HBnB Evolution — System Architecture & Design Documentation Overview
 
+
 **This document provides a comprehensive technical overview of the HBnB Evolution system architecture, focusing on package structure, business logic design, entity relationships, and API interaction workflows. It serves as a reference for understanding how the system is organized internally and how its components collaborate to deliver core functionality.**
 
 ## The documentation includes:
