@@ -319,7 +319,7 @@ Analytics Integration: Usage tracking and business intelligence
 ## Contributors 
 
 - *Raghad Almalki* – https://github.com/Raghad717  
-- *Rama Alshahri* – https://github.com/csrama  
+- *Rama Alshehri* – https://github.com/csrama  
 - *Jana Bakri* – https://github.com/janabakri
 
 - # HBnB - RESTful API Backend
@@ -662,5 +662,5 @@ the platform now provides a strong foundation for future development, including 
 ## Contributors 
 
 - *Raghad Almalki* – https://github.com/Raghad717  
-- *Rama Alshahri* – https://github.com/csrama  
+- *Rama Alshehri* – https://github.com/csrama  
 - *Jana Bakri* – https://github.com/janabakri

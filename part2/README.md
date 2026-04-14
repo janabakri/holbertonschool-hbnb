@@ -134,5 +134,5 @@ Located in `app/persistence/repository.py`, the Repository abstracts data storag
 ## Contributors 
 
 - *Raghad Almalki* – https://github.com/Raghad717  
-- *Rama Alshahri* – https://github.com/csrama  
+- *Rama Alshehri* – https://github.com/csrama  
 - *Jana Bakri* – https://github.com/janabakri

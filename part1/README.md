@@ -19,7 +19,7 @@ This document is intended for developers, reviewers, and instructors who need a 
 
 Raghad Almalki — https://github.com/Raghad717
 
-Rama Alshahri — https://github.com/csrama
+Rama Alshehri — https://github.com/csrama
 
 Jana Bakri — https://github.com/janabakri
 
@@ -378,5 +378,5 @@ Flow Overview:
 
 ## Project Team
 - *Raghad Almalki*    
-- *Rama Alshahri* 
+- *Rama Alshehri* 
 - *Jana Bakri* 
