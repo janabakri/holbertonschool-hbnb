@@ -425,9 +425,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (reviewForm && placeId) {
+        if (reviewForm) {
             reviewForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
+
+                if (!placeId) {
+                    alert('Error: No place ID found in URL. Please navigate here from the home page!');
+                    return;
+                }
 
                 const text = document.getElementById('review-text').value.trim();
                 const rating = parseInt(document.getElementById('rating').value, 10);
