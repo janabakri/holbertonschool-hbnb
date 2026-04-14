@@ -27,7 +27,7 @@ header, footer {
     border-bottom: 1px solid var(--border);
 }
 
-.header-content {
+.header-content, .header-container {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
