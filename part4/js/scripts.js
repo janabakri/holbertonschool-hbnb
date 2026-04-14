@@ -2,21 +2,25 @@
 
 const API_URL = 'http://127.0.0.1:5000/api/v1';
 
-/*UTILITY: Cookie helpers */
+/*UTILITY: Token helpers (localStorage-based) */
 function getCookie(name) {
-    const cookies = document.cookie.split(';');
+    // Primary: check localStorage
+    const lsVal = localStorage.getItem(name);
+    if (lsVal) return lsVal;
 
+    // Fallback: check cookies (for compatibility)
+    const cookies = document.cookie.split(';');
     for (let cookie of cookies) {
         const [key, value] = cookie.trim().split('=');
-        if (key === name) {
-            return value;
-        }
+        if (key === name) return value;
     }
-
     return null;
 }
 
 function setCookie(name, value, days = 7) {
+    // Store in localStorage for reliable cross-page access
+    localStorage.setItem(name, value);
+    // Also set cookie as fallback
     const expires = new Date();
     expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
     document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
@@ -37,6 +41,8 @@ function updateLoginLinkState(loginLink, token) {
         loginLink.style.display = 'block';
         loginLink.onclick = (e) => {
             e.preventDefault();
+            // Clear token from both localStorage and cookie
+            localStorage.removeItem('token');
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             window.location.href = 'index.html';
         };
@@ -367,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     const data = await response.json();
                     setCookie('token', data.access_token);
-                    window.location.href = document.referrer || 'index.html';
+                    window.location.href = 'index.html';
                 } else {
                     errorMsg.style.display = 'block';
                     errorMsg.textContent = 'Invalid email or password. Please try again.';
