@@ -37,8 +37,12 @@ def user_to_dict(user):
 class UserList(Resource):
 
     @api.response(200, "List of users retrieved successfully")
+    @api.response(403, "Admin access required")
+    @jwt_required()
     def get(self):
-        """Retrieve a list of users - PUBLIC"""
+        """Retrieve a list of users - ADMIN ONLY"""
+        if not get_jwt().get('is_admin', False):
+            return {'error': 'Admin access required'}, 403
         return [user_to_dict(u) for u in facade.get_all_users()], 200
 
     @api.expect(user_model, validate=True)
