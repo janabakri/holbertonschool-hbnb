@@ -38,8 +38,19 @@ function getPlaceIdFromURL() {
     return params.get('id');
 }
 
+function logout() {
+    localStorage.removeItem('token');
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.href = 'index.html';
+}
+
 function updateLoginLinkState(loginLink, token) {
     if (!loginLink) return;
+
+    // Remove any existing admin link to avoid duplicates
+    const existingAdminLink = document.getElementById('admin-link');
+    if (existingAdminLink) existingAdminLink.remove();
+
     if (token) {
         loginLink.textContent = 'Logout';
         loginLink.href = '#';
@@ -48,11 +59,21 @@ function updateLoginLinkState(loginLink, token) {
         loginLink.style.display = 'block';
         loginLink.onclick = (e) => {
             e.preventDefault();
-            // Clear token from both localStorage and cookie
-            localStorage.removeItem('token');
-            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            window.location.href = 'index.html';
+            logout();
         };
+
+        // Add Admin link if user is admin
+        const payload = parseJwt(token);
+        if (payload && payload.is_admin) {
+            const adminLink = document.createElement('a');
+            adminLink.id = 'admin-link';
+            adminLink.href = 'admin.html';
+            adminLink.textContent = 'Admin';
+            adminLink.className = 'login-button';
+            adminLink.style.marginRight = '10px';
+            adminLink.style.backgroundColor = 'var(--surface)';
+            loginLink.parentNode.insertBefore(adminLink, loginLink);
+        }
     } else {
         loginLink.textContent = 'Login';
         loginLink.href = 'login.html';

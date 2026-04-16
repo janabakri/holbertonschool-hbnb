@@ -7,119 +7,179 @@
   <link rel="icon" href="images/icon.png">
   <link rel="stylesheet" href="css/styles.css">
   <style>
-/* Additional style for the control panel */
-      .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    .admin-table th, .admin-table td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
-    }
-    .admin-table th {
-      background-color: #f4f4f4;
-    }
-    .btn-delete {
-      background-color: #ff4444;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .btn-edit {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+    /* Admin Dashboard Specific Styles */
     .dashboard-section {
-      margin: 30px 0;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+      padding: 30px !important;
+      width: 100%;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .dashboard-section h2 {
+      text-align: left;
+      margin-top: 0;
+      color: var(--primary-purple);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 20px 0;
+      color: var(--text-primary);
+    }
+
+    .admin-table th, 
+    .admin-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .admin-table th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+    }
+
+    .admin-table tr:hover td {
+      background-color: rgba(138, 43, 226, 0.05);
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .btn-delete {
+      background-color: transparent;
+      color: #ff5252;
+      border: 1px solid #ff5252;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.75rem;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .btn-delete:hover {
+      background-color: #ff5252;
+      color: white;
+      box-shadow: 0 0 10px rgba(255, 82, 82, 0.3);
+    }
+
+    .admin-actions-cell {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .admin-table th, .admin-table td {
+        padding: 10px;
+        font-size: 0.85rem;
+      }
+      .dashboard-section {
+        padding: 20px !important;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="header-container">
-      <img src="images/logo.png" alt="HBnB Logo" class="logo">
+    <div class="header-content">
+      <a href="index.html">
+        <img src="images/logo.png" alt="HBnB Logo" class="logo">
+      </a>
       <a href="#" class="login-button" id="logout-btn" onclick="logout()">Logout</a>
     </div>
   </header>
 
   <main class="container">
-    <h1>Admin Dashboard</h1>
+    <section class="hero" style="margin-bottom: 30px;">
+      <h1>Admin Dashboard</h1>
+    </section>
     
     <div id="dashboard-content">
-<!-- Users Section -->
-        <div class="dashboard-section">
+      <!-- Users Section -->
+      <section class="dashboard-section card">
         <h2>Users Management</h2>
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="users-list">
-            <tr><td colspan="5">Loading users...</td></tr>
-          </tbody>
-        </table>
-      </div>
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-list">
+              <tr><td colspan="5">Loading users...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <!-- Places Section -->
-      <div class="dashboard-section">
+      <section class="dashboard-section card">
         <h2>Places Management</h2>
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Price</th>
-              <th>Owner</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="admin-places-list">
-            <tr><td colspan="4">Loading places...</td></tr>
-          </tbody>
-        </table>
-      </div>
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Owner</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-places-list">
+              <tr><td colspan="4">Loading places...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <!-- Amenities Section -->
-      <div class="dashboard-section">
+      <section class="dashboard-section card">
         <h2>Amenities Management</h2>
         
-<!-- New Amenities addition form -->
-          <form id="create-amenity-form" style="margin-bottom: 20px;">
-          <h3>Add New Amenity</h3>
-          <input type="text" id="amenity-name" placeholder="Amenity Name" required>
-          <input type="text" id="amenity-description" placeholder="Description (optional)">
-          <button type="submit">Create Amenity</button>
-        </form>
+        <!-- New Amenities addition form -->
+        <div class="amenity-form-container">
+          <h3 style="margin-top: 0; color: var(--text-primary); margin-bottom: 15px;">Add New Amenity</h3>
+          <form id="create-amenity-form" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" id="amenity-name" placeholder="Amenity Name" required style="flex: 1; min-width: 200px;">
+            <input type="text" id="amenity-description" placeholder="Description (optional)" style="flex: 2; min-width: 300px;">
+            <button type="submit" class="submit-button" style="padding: 10px 20px;">Create</button>
+          </form>
+        </div>
 
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="amenities-list">
-            <tr><td colspan="3">Loading amenities...</td></tr>
-          </tbody>
-        </table>
-      </div>
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="amenities-list">
+              <tr><td colspan="3">Loading amenities...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -127,6 +187,7 @@
     <p>© 2026 HBnB Evolution. All rights reserved.</p>
   </footer>
 
+  <script src="js/scripts.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>
