@@ -211,6 +211,32 @@ async function fetchPlaceDetails(token, placeId) {
         const place = await response.json();
         displayPlaceDetails(place);
         fetchReviews(token, placeId);
+
+        // Hide add review section if user is owner
+        const addReviewSection = document.getElementById('add-review-section');
+        if (addReviewSection) {
+            if (token) {
+                const payload = parseJwt(token);
+                const userId = payload ? payload.sub : null;
+                const ownerId = place.owner_id || place.owner;
+
+                if (userId && ownerId && userId === ownerId) {
+                    addReviewSection.style.display = 'none';
+                    // Optional: add a message
+                    const note = document.createElement('p');
+                    note.style.textAlign = 'center';
+                    note.style.color = 'var(--text-light)';
+                    note.style.fontStyle = 'italic';
+                    note.style.marginTop = '20px';
+                    note.textContent = "You cannot review your own place.";
+                    addReviewSection.parentNode.insertBefore(note, addReviewSection.nextSibling);
+                } else {
+                    addReviewSection.style.display = 'block';
+                }
+            } else {
+                addReviewSection.style.display = 'none';
+            }
+        }
     } catch (error) {
         const section = document.getElementById('place-details');
         if (section) {
@@ -462,10 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const loginLink = document.getElementById('login-link');
         updateLoginLinkState(loginLink, token);
 
-        const addReviewSection = document.getElementById('add-review-section');
-        if (addReviewSection) {
-            addReviewSection.style.display = token ? 'block' : 'none';
-        }
+        // Visibility is now handled in fetchPlaceDetails after checking ownership
 
         if (placeId) {
             fetchPlaceDetails(token, placeId);
