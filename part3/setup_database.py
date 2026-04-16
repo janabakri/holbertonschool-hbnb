@@ -34,10 +34,10 @@ def main():
             print("Creating fresh tables...")
             db.create_all()
 
-            print("✅ Tables ready!")
+            print("Tables ready!")
 
             # Step 2: Create Users
-            print("\n📝 Creating users...")
+            print("\nCreating users...")
 
             admin = User(
                 id=str(uuid.uuid4()),
@@ -70,10 +70,10 @@ def main():
             db.session.add(rama)
 
             db.session.commit()
-            print(f"✅ Created {User.query.count()} users")
+            print(f"Created {User.query.count()} users")
             
             # Step 3: Create Amenities
-            print("\n📝 Creating amenities...")
+            print("\nCreating amenities...")
 
             amenities_names = ['WiFi', 'Pool', 'Parking', 'Breakfast', 'Gym', 'AC']
             amenities = {}
@@ -87,10 +87,10 @@ def main():
                 amenities[name] = a
 
             db.session.commit()
-            print(f"✅ Created {Amenity.query.count()} amenities")
+            print(f"Created {Amenity.query.count()} amenities")
 
             # Step 4: Create Places
-            print("\n📝 Creating places...")
+            print("\nCreating places...")
 
             place1 = Place(
                 id=str(uuid.uuid4()),
@@ -161,17 +161,17 @@ def main():
             db.session.add(place5)
 
             db.session.commit()
-            print(f"✅ Created {Place.query.count()} places")
+            print(f"Created {Place.query.count()} places")
 
             # Step 5: Create Reviews
-            print("\n📝 Creating reviews...")
+            print("\nCreating reviews...")
 
             reviews_data = [
-                (place1.id, jana.id,  5, 'Amazing place! Highly recommended.'),
-                (place1.id, rama.id,  4, 'Great experience, clean and lovely service.'),
-                (place2.id, rama.id,  4, 'Beautiful hotel with a great location.'),
+                (place1.id, rama.id,  5, 'Amazing place! Highly recommended.'),
+                (place1.id, admin.id, 4, 'Great experience, clean and lovely service.'),
+                (place2.id, jana.id,  4, 'Beautiful hotel with a great location.'),
                 (place3.id, jana.id,  5, 'Very comfortable apartment at a reasonable price.'),
-                (place4.id, jana.id,  5, 'Luxurious villa! We loved the garden.'),
+                (place4.id, rama.id,  5, 'Luxurious villa! We loved the garden.'),
             ]
 
             for place_id, user_id, rating, text in reviews_data:
@@ -185,17 +185,17 @@ def main():
                 db.session.add(review)
 
             db.session.commit()
-            print(f"✅ Created {Review.query.count()} reviews")
+            print(f"Created {Review.query.count()} reviews")
 
             # Summary
             print("\n" + "="*60)
-            print("🎉 Database setup completed successfully!")
+            print("Database setup completed successfully!")
             print("="*60)
             print("\n📋 Login Credentials:")
             print("-" * 60)
-            print("  raghad@hbnb.com  | admin123  | 👑 Admin (Raghad)")
-            print("  jana@hbnb.com    | jana123   | 👤 User (Jana)")
-            print("  rama@hbnb.com    | rama123   | 👤 User (Rama)")
+            print("  raghad@hbnb.com  | admin123  | Admin (Raghad)")
+            print("  jana@hbnb.com    | jana123   | User (Jana)")
+            print("  rama@hbnb.com    | rama123   | User (Rama)")
             print("-" * 60)
             print(f"\n📊 Summary:")
             print(f"   Users:     {User.query.count()}")
@@ -207,7 +207,7 @@ def main():
             return 0
 
         except Exception as e:
-            print(f"\n❌ Error: {e}")
+            print(f"\nError: {e}")
             import traceback
             traceback.print_exc()
             db.session.rollback()
